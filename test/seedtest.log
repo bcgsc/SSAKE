@@ -1,0 +1,33 @@
+
+Running: ../SSAKE [v3.8.2]
+-f Herpesvirus_3.60kb.reads.fa
+-s Herpesvirus_3.60kb.seed.fa
+	-i 1
+	-j 20
+-h 0
+-w 5
+-m 16
+-o 2
+-r 0.7
+-t 0
+-c 1
+Coverage: seedtest.coverage.csv
+Read position: seedtest.readposition
+Pileup: seedtest.pileup
+-z 100
+
+Contigs: seedtest.contigs
+Singlets: seedtest.singlets
+
+Excluded reads: seedtest.short
+Log: seedtest.log
+
+=>Reading sequences initiated Fri May 16 12:30:25 PDT 2014
+Using seed sequence file Herpesvirus_3.60kb.seed.fa for this assembly.
+Note: ONLY sequences in Herpesvirus_3.60kb.seed.fa will be used as seeds (i.e. -f Herpesvirus_3.60kb.reads.fa and -g  will NOT be used as seeds, only used for extension)
+1877 total sequences (1485 unique)
+Number of unique seed sequences: 1
+
+=>Sequence assembly initiated Fri May 16 12:30:27 PDT 2014
+
+Contig assembly executed normally Fri May 16 12:30:29 PDT 2014
