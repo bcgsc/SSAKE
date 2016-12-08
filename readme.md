@@ -86,48 +86,56 @@ cd test;./MiSeqCampylobacterAssemblyPIPELINE.sh
 cd test;./MiSeqCampylobacterAssembly.sh
 
 
-CONTIG SEQUENCE STATS
+Contig sequence stats
 --------------------------------------------------------------------------------
-Mean (nt),10476.89
-Max (nt),119107
-Min (nt),200
-n,215
-Stdev (nt),19021.54
-Variance (nt),361818996.83
-TrimmedMean (nt),2763.44
-Median (nt),412.00
-Sum (nt),2252531.00
-N20,64969
-N50,41436
-N80,17465
-Size Range,#bases,#sequences
->=100000,119107,1
-10000-100000,1951445,63
-200-1000,36330,119
-1000-10000,145649,32
+Metric|Value
+-----|-----
+Mean (nt)|10476.89
+Max (nt)|119107
+Min (nt)|200
+n|215
+Stdev (nt)|19021.54
+Variance (nt)|361818996.83
+TrimmedMean (nt)|2763.44
+Median (nt)|412.00
+Sum (nt)|2252531.00
+N20|64969
+N50|41436
+N80|17465
+
+Size Range|#bases|#sequences
+-----|-----|-----
+>=100000|119107|1
+10000-100000|1951445|63
+200-1000|36330|119
+1000-10000|145649|32
 
 ./ssake_v3.8.4/tools/makeFastaFileFromScaffolds.pl run2014.scaffolds
 ./ssake_v3.8.4/tools/getStats.pl run2014.scaffolds.fa
 
-SCAFFOLD SEQUENCE STATS
+Scaffold sequence stats
 --------------------------------------------------------------------------------
-Mean (nt),14931.05
-Max (nt),252560
-Min (nt),200
-n,151
-Stdev (nt),42086.22
-Variance (nt),1771250106.52
-TrimmedMean (nt),349.95
-Median (nt),288.00
-Sum (nt),2254589.00
-N20,227805
-N50,124387
-N80,59173
-Size Range,#bases,#sequences
->=100000,1350704,8
-10000-100000,805378,18
-200-1000,33684,113
-1000-10000,63291,12
+Metric|Value
+-----|-----
+Mean (nt)|14931.05
+Max (nt)|252560
+Min (nt)|200
+n|151
+Stdev (nt)|42086.22
+Variance (nt)|1771250106.52
+TrimmedMean (nt)|349.95
+Median (nt)|288.00
+Sum (nt)|2254589.00
+N20|227805
+N50|124387
+N80|59173
+
+Size Range|#bases|#sequences
+-----|-----|-----
+>=100000|1350704|8
+10000-100000|805378|18
+200-1000|33684|113
+1000-10000|63291|12
 
 
 ###What's new in v3.7+ ?
