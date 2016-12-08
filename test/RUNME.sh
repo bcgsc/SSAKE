@@ -1,1 +1,0 @@
-MiSeqCampylobacterAssembly.sh
