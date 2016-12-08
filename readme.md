@@ -1,9 +1,8 @@
-##Short Sequence Assembly by K-mer search and 3' read Extension (SSAKE) 
-
-###SSAKE v3.8.4 Rene L. Warren, 2006-2016
-###email: rwarren at bcgsc.ca
-###Visit www.bcgsc.ca/bioinfo/software/ssake for additional information
-
+#SSAKE
+##Short Sequence Assembly by K-mer search and 3' read Extension
+##SSAKE v3.8.4 Rene L. Warren, 2006-2016
+##email: rwarren [at] bcgsc [dot] ca
+##Visit www.bcgsc.ca/bioinfo/software/ssake for additional information
 
 
 ###Description
