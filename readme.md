@@ -238,10 +238,10 @@ SSAKE might not be suited to work with 454-type reads.  Simply because recurring
 -------
 
 Download the tar ball, gunzip and extract the files on your system using:
-
+<code>
 gunzip ssake_v3-8-4.tar.gz
 tar -xvf ssake_v3-8-4.tar
-
+</code>
 Change the shebang line of SSAKE to point to the version of perl installed on your system and you're good to go.
 
 
@@ -265,7 +265,7 @@ Warren RL, Sutton GG, Jones SJM, Holt RA.  2007.  Assembling millions of short D
 
 ###Running SSAKE
 -------------
-
+<code>
 e.g. SSAKE -f paired.fa -m 17 -o 4 -r 0.7 -p 1 -c 1 -e 0.75 -k 2 -a 0.6 -z 50 -w 5 -g unpaired.fa 
 
 Usage: ./SSAKE [v3.8.4]
@@ -299,7 +299,7 @@ Usage: ./SSAKE [v3.8.4]
 -x  Minimum overlap required between contigs to merge adjacent contigs in a scaffold (default -x 20, optional)
 -n  N-pad gaps (-n 1 = yes, default = no 0, optional)
 -g  Fasta file containing unpaired sequence reads (optional)
-
+</code>
 
 ###Test data
 ---------
@@ -510,10 +510,10 @@ General points:
 
 ###Understanding the .contigs fasta header
 ---------------------------------------
-
+<pre>
 e.g.
 >contig27|size52|read193|cov92.79
-
+</pre>
 contig id# = 27
 size (G) = 52 nt
 number of reads (N) = 193
@@ -526,9 +526,10 @@ C = T / G
 
 ###Understanding the .scaffolds csv file
 -------------------------------------
-
+<pre>
+e.g.
 scaffold1,7484,f127Z7068k12a0.58m42_f3090z62k7a0.14m76_f1473z354
-
+</pre>
 column 1: a unique scaffold identifier
 column 2: the sum of all contig sizes that made it to the scaffold/supercontig
 column 3: a contig chain representing the layout:
@@ -544,17 +545,17 @@ Use makeFastaFileFromScaffolds.pl included in this distribution to make a scaffo
 
 ###Understanding the .coverage.csv file
 ------------------------------------
-
+<pre>
 e.g.
 >contig1|size60000|read74001|cov37.00
 12,12,13,13,13,14,14,15,16,16,20,21,22,23,25,26,27,28,27 ...
-
+</pre>
 Each number represents the number of reads covering that base at that position.
 
 
 ###Understanding the .readposition file
 ------------------------------------
-
+<pre>
 e.g.
 >contig1|size60000|read74001|cov37.00
 READ_85952,3,32
@@ -569,7 +570,7 @@ READ_9721,15,44
 READ_49141,16,45
 READ_43328,18,1
 READ_94449,18,1
-
+</pre>
 In this order: read name [template th -p 1 :: name followed with 1 or 2, corresponds to the order in the sequence input (1:2)], start coordinate, end coordinate.  end < start indicates read is on minus strand
 
 
