@@ -17,15 +17,19 @@ It is an easy-to-use, robust, reliable and tractable assembly algorithm for shor
 
 Best assembly results are achieved with quality-trimmed reads.  When dealing with Solexa/Illumina sequences, remove low quality bases, whenever possible, with:
 
+<code>
 TQS.py -f _seq.txt -q _prb.txt -t 5 -d 5 -l #CYCLES -c 20  OR OTHER SETTINGS 
 TQSfastq.py -f myfile.fq -t 20 -c 30 -e 64
+</code>
 
 example:
+<code>
 ~/ssake_v3.8.4/tools/TQSfastq.py -f ../myIlluminaSeqLane_1.fq -c 30 -t 20  ##mate no.1
 ~/ssake_v3.8.4/tools/TQSfastq.py -f ../myIlluminaSeqLane_2.fq -c 30 -t 20  ##mate no.2
 ~/ssake_v3.8.4/tools/makePairedOutput2UNEQUALfiles.pl ../myIlluminaSeqLane_1.fq_T20C20E64.trim.fa ../myIlluminaSeqLane_2.fq_T20C20E64.trim.fa
 will produced "paired.fa" and "unpaired.fa"
 ~/ssake_v3.8.4/SSAKE -f paired.fa -g unpaired.fa -p 1 -m 17 -o 4 -c 1 -w 5
+</code>
 
 The scripts are located in ./tools subdirectory included with this release.
 It is recommended that you run TQS.py/TQSfastq.py for every tile (batch job) and cat the outputted fasta file, especially if your data set is large (e.g. entire flowcell)
@@ -71,6 +75,7 @@ ftp://ftp.bcgsc.ca/supplementary/SSAKE/CC57C_paired.fa and CC57C_unpaired.fa
  
 SSAKE ASSEMBLY PIPELINE:
 
+<code>
 ./tools/TQSfastq.py -f Assemble_1_R1.fastq -t 30 -c 100 -e 33
 ./tools/TQSfastq.py -f Assemble_1_R2.fastq -t 30 -c 100 -e 33
 cat Assemble_1_R2.fastq_T30C100E33.trim.fa |perl -ne 'if(/^(\>\@\S+)/){print "$1b\n";}else{print;}' >Assemble_1_R2.fastq_T30C100E33.trimFIX.fa
@@ -79,12 +84,14 @@ cat Assemble_1_R1.fastq_T30C100E33.trim.fa |perl -ne 'if(/^(\>\@\S+)/){print "$1
 ./Syrupy-1.4.0/scripts/syrupy.py ./SSAKE -f CC57C_paired.fa -p 1 -g CC57C_unpaired.fa -m 20 -w 5 -b run2014
 
 ./ssake_v3.8.4/tools/getStats.pl run2014.contigs
+</code>
 
 TRY IT OUT BY SIMPLY RUNNING:
 
+<code>
 cd test;./MiSeqCampylobacterAssemblyPIPELINE.sh
 cd test;./MiSeqCampylobacterAssembly.sh
-
+</code>
 
 Contig sequence stats
 --------------------------------------------------------------------------------
@@ -110,8 +117,10 @@ Size Range|#bases|#sequences
 200-1000|36330|119
 1000-10000|145649|32
 
+<code>
 ./ssake_v3.8.4/tools/makeFastaFileFromScaffolds.pl run2014.scaffolds
 ./ssake_v3.8.4/tools/getStats.pl run2014.scaffolds.fa
+</code>
 
 Scaffold sequence stats
 --------------------------------------------------------------------------------
@@ -386,6 +395,7 @@ For each read pairs, putative contig pairs (pre-scaffolding stage) are tallied b
 Please note that this stage accepts redundancy of contig pairs (i.e. a given contig may link to multiple contigs, and the number of links (spanning pairs) between any given contig pair is recorded, along with a mean putative gap or overlap(-)).
 Once pairing between contigs is complete, the scaffolds are built using contigs (-z or larger) as seeds.  Every contig is used in turn until all have been incorporated into a scaffold.
 
+<pre>
 Consider the following contig pairs (AB, AC and rAD):
 
     A         B
@@ -405,6 +415,7 @@ Consider the following contig pairs (AB, AC and rAD):
       ->   <-
      ->   <-
        ->   <-
+</pre>
 
 Two parameters control scaffolding (-k and -a).  The -k option specifies the minimum number of links (read pairs) a valid contig pair MUST have to be considered.  The -a option specifies the maximum ratio between the best two contig pairs for a given seed/contig being extended.  For example, contig A shares 4 links with B and 2 links with C, in this orientation.  contig rA (reverse) also shares 3 links with D.   When it's time to extend contig A (with the options -k and -a set to 2 and 0.7, respectively), both contig pairs AB and AC are considered.  Since C (second-best) has 2 links and B (best) has 4 (2/4) = 0.5 below the maximum ratio of 0.7, A will be linked with B in the scaffold and C will be kept for another extension. If AC had 3 links the resulting ratio (0.75), above the user-defined maximum 0.7 would have caused the extension to terminate at A, with both B and C considered for a different scaffold.  A maximum links ratio of 1 (not recommended) means that the best two candidate contig pairs have the same number of links -- SSAKE will accept the first one since both have a valid gap/overlap.  When a scaffold extension is terminated on one side, the scaffold is extended on the "left", by looking for contig pairs that involve the reverse of the seed (in this example, rAD).  With AB and AC having 4 and 2 links, respectively and rAD being the only pair on the left, the final scaffolds outputted by SSAKE would be:
 
