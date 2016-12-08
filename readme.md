@@ -443,7 +443,7 @@ UNPAIRED:
 
 DNA sequences can be in lower caps as well
 
->
+<pre>
 >PX1CG_29
 TTAACACTTTCGGATATTTCTGATG
 >PX1CG_35
@@ -451,16 +451,18 @@ CTTTCGGATATTTCTGATGAGTCGA
 >PX1CG_64
 TTATCTTGATAAAGCAGGAATTACT
 ...
->
+<code>
 
 PAIRED:
 
+<pre>
 >2-1-464-197:200
 TGGCTCACCCCTGTAATCCCAGCACT:CTCCCAGGTTCAAGCGATTCTCCTGC
 >2-1-783-425:300
 GTCTGAGGGTCCCAGGAACCAG:TGCCCCAGAGGTGGGAGCAGGGGA
 >2-1-662-655:1000
 TGAATCCCCACCAGGCGCCTTCGG:CACTTTATTATTAATGTACAAAAT
+<code> 
 
 -Paired sequences must be concatenated together in one fasta-like entry, separated by ":".  For example, TGGCTCACCCCTGTAATCCCAGCACT:CTCCCAGGTTCAAGCGATTCTCCTGC consists of two paired reads.  Changes to the input was made to allow reads of variable length (e.g. quality-trimmed reads) to be considered by SSAKE.  As of v3-6, the header line [>] must have [:insert_size] at the very end (see above example)
 
