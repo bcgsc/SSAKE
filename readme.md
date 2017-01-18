@@ -260,8 +260,9 @@ Questions or comments?  We would love to hear from you!
 Thank you for using, developing and promoting this free software.
 If you use SSAKE for you research, please cite:
 
+<pre>
 Warren RL, Sutton GG, Jones SJM, Holt RA.  2007.  Assembling millions of short DNA sequences using SSAKE.  Bioinformatics. 23(4):500-501
-
+</pre>
 
 ###Running SSAKE
 -------------
