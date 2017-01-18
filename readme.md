@@ -492,20 +492,25 @@ General points:
 ###Output files
 ------------
 
-.contigs   :: fasta file; All sequence contigs
-.log       :: text file; Logs execution time / errors / pairing stats (if -p is set to 1)
-.short     :: text file; Lists sequence reads shorter than a set, acceptable, minimum
-.singlets  :: fasta file; All unassembled sequence reads
+Output file (-p 0 and -p 1) | Description
+---|---
+.contigs   | fasta file; All sequence contigs
+.log       | text file; Logs execution time / errors / pairing stats (if -p is set to 1)
+.short     | text file; Lists sequence reads shorter than a set, acceptable, minimum
+.singlets  | fasta file; All unassembled sequence reads
 
--p 1
-.pairing_distribution.csv :: comma-separated file; 1st column is the calculated distance for each pair (template) with reads that assembled logically within the same contig.  2nd column is the number of pairs at that distance
-.pairing_issues           :: text file; Lists all pairing issues encountered between contig pairs and illogical/out-of-bounds pairing
-.scaffolds                :: comma-separated file; see below
-.mergedcontigs            :: fasta file; All merged/unmerged contigs >= -z bases within scaffolds are listed.  The overlap sequence between contigs (>= -x bases) will be shown in lower case within the merged contig.  Note that *perfect* sequence overlap has to occur between 2 predicted adjacent contigs of a scaffold in order to merge.  It is possible that two contigs merge even though they are NOT predicted to do so (perhaps because insert size range supplied is off or mate pairs are misassembled).  When two consecutive contigs do not physically overlap and the -n option is set to 1, then gaps will be padded with Ns of length corresponding to the predicted gap size m (refer to Understanding the .scaffolds csv file below) and predicted but undetected overlaps with a single (n).
+Output file (-p 1) | Description
+---|---
+.pairing_distribution.csv | comma-separated file; 1st column is the calculated distance for each pair (template) with reads that assembled logically within the same contig.  2nd column is the number of pairs at that distance
+.pairing_issues           | text file; Lists all pairing issues encountered between contig pairs and illogical/out-of-bounds pairing
+.scaffolds                | comma-separated file; see below
+.mergedcontigs            | fasta file; All merged/unmerged contigs >= -z bases within scaffolds are listed.  The overlap sequence between contigs (>= -x bases) will be shown in lower case within the merged contig.  Note that *perfect* sequence overlap has to occur between 2 predicted adjacent contigs of a scaffold in order to merge.  It is possible that two contigs merge even though they are NOT predicted to do so (perhaps because insert size range supplied is off or mate pairs are misassembled).  When two consecutive contigs do not physically overlap and the -n option is set to 1, then gaps will be padded with Ns of length corresponding to the predicted gap size m (refer to Understanding the .scaffolds csv file below) and predicted but undetected overlaps with a single (n).
 
--c 1  (WARNING: ASSOCIATED FILES CAN BECOME VERY LARGE!)
-.readposition             :: this is a text file listing all whole (fully embedded) reads, start and end coordinate onto the contig (in this order).  For reads aligning on the minus strand, end coordinate is < start coordinate
-.coverage.csv             :: this is a comma-separated values file showing the base coverage at every position for any given contig   >  -z
+Output file (-c 1*) | Description
+---|---
+.readposition             | this is a text file listing all whole (fully embedded) reads, start and end coordinate onto the contig (in this order).  For reads aligning on the minus strand, end coordinate is < start coordinate
+.coverage.csv             | this is a comma-separated values file showing the base coverage at every position for any given contig   >  -z
+*WARNING: ASSOCIATED FILES CAN BECOME VERY LARGE!
 
 
 ###Understanding the .contigs fasta header
@@ -577,10 +582,11 @@ In this order: read name [template th -p 1 :: name followed with 1 or 2, corresp
 ###SSAKE does not
 --------------
 
--Take into consideration base quality scores.  It is up to the user to process the sequence data before clustering with SSAKE.
-	Python scripts (TQS.py, TQSfastq.py, TQSexport.fq) are provided to help trim poor quality bases off Illumina sequences.  
-	Refer to TQS.readme and TRIMMING_PAIRED_READS.README included in this distribution (in the ./tools subdirectory) for information on how to run those programs
--Consider sequence read having any character other than A,C,G,T and will skip these reads entirely while reading the fasta file. 
+1. Take into consideration base quality scores.  It is up to the user to process the sequence data before clustering with SSAKE.
+
+Note: Python scripts (TQS.py, TQSfastq.py, TQSexport.fq) are provided to help trim poor quality bases off Illumina sequences. Refer to TQS.readme and TRIMMING_PAIRED_READS.README included in this distribution (in the ./tools subdirectory) for information on how to run those programs
+
+2. Consider sequence read having any character other than A,C,G,T and will skip these reads entirely while reading the fasta file. 
 
 
 ###License
