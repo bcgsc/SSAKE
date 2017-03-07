@@ -46,7 +46,7 @@ Improvements to the targeted assembly functionality, recruiting whole read pairs
 ###What's new in v3.8.3 ?
 ----------------------
 
-Included tie-breaker option (-q) when determining consensus from equal-coverage bases. When set (-q 1), the parameter r is overridden. Note that even though a "random" base is chosen in such situations, SSAKE will only extend contigs in cases where there is read supportover the chosen base. Included option to ignore reads making up the consensus base extension (-y).
+Included tie-breaker option (-q) when determining consensus from equal-coverage bases. When set (-q 1), the parameter r is overridden. Note that even though a "random" base is chosen in such situations, SSAKE will only extend contigs in cases where there is read support over the chosen base. Included option to ignore reads making up the consensus base extension (-y).
 
 
 ###What's new in v3.8.2 ?
@@ -584,10 +584,9 @@ In this order: read name [template th -p 1 :: name followed with 1 or 2, corresp
 --------------
 
 1. Take into consideration base quality scores.  It is up to the user to process the sequence data before clustering with SSAKE.
+2. Consider sequence read having any character other than A,C,G,T and will skip these reads entirely while reading the fasta file. 
 
 Note: Python scripts (TQS.py, TQSfastq.py, TQSexport.fq) are provided to help trim poor quality bases off Illumina sequences. Refer to TQS.readme and TRIMMING_PAIRED_READS.README included in this distribution (in the ./tools subdirectory) for information on how to run those programs
-
-2. Consider sequence read having any character other than A,C,G,T and will skip these reads entirely while reading the fasta file. 
 
 
 ###License
