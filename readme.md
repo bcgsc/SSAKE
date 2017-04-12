@@ -46,7 +46,7 @@ Improvements to the targeted assembly functionality, recruiting whole read pairs
 ###What's new in v3.8.3 ?
 ----------------------
 
-Included tie-breaker option (-q) when determining consensus from equal-coverage bases. When set (-q 1), the parameter r is overridden. Note that even though a "random" base is chosen in such situations, SSAKE will only extend contigs in cases where there is read support over the chosen base. Included option to ignore reads making up the consensus base extension (-y).
+Included tie-breaker option (-q) when determining consensus from equal-coverage bases. When set (-q 1), the parameter r is overridden. Note that even though the base is "randomly" chosen in such situations, SSAKE will only extend contigs in cases where there is read support over the chosen base. Included option to ignore reads making up the consensus base extension (-y).
 
 
 ###What's new in v3.8.2 ?
@@ -290,7 +290,7 @@ Usage: ./SSAKE [v3.8.4]
 -h  Ignore read name/header *will use less RAM if set to -h 1* (-h 1 = yes, default = no, optional)
 -b  Base name for your output files (optional)
 -z  Minimum contig size to track base coverage and read position (default -z 100, optional)
--q  Break tie when no consensus base at position, pick random base (-q 1 = yes, default = no, optional)
+-q  Break tie when no consensus base at position, select base at random (-q 1 = yes, default = no, optional)
 -p  Paired-end reads used? (-p 1 = yes, default = no, optional)
 -v  Runs in verbose mode (-v 1 = yes, default = no, optional)
 ============ Options below only considered with -p 1 ============
@@ -378,9 +378,10 @@ Once the search complete, a consensus sequence is derived from the hash table c,
 The process of progressively cycling through longer to shorter 3'-most k-mer is repeated after every sequence extension until nothing else can be done on that side.  Since only left-most searches are possible with a prefix tree, when all possibilities have been exhausted for the 3' extension, the complementary strand of the contiguous sequence generated is used to extend the contig on the 5' end.  The DNA prefix tree is used to limit the search space by segregating sequence reads and their reverse-complemented counterparts by their first eleven 5' end bases.  
 
 There are three ways to control the stringency in SSAKE:
-1) Disallow read/contig extension if the coverage is too low (-o).  Higher -o values lead to shorter contigs, but minimizes sequence misassemblies.
-2) Adjust the minimum overlap -m allowed between the seed/contig and short sequence reads.  Higher m values lead to more accurate contigs at the cost of decreased contiguity.  
-3) Set the minimum base ratio -r to higher values
+i) Disallow read/contig extension if the coverage is too low (-o).  Higher -o values lead to shorter contigs, but minimizes sequence misassemblies.
+ii) Adjust the minimum overlap -m allowed between the seed/contig and short sequence reads.  Higher m values lead to more accurate contigs at the cost of decreased contiguity.  
+iii) Set the minimum base ratio -r to higher values
+
 
 
 2. Building scaffolds with SSAKE
