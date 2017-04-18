@@ -2,12 +2,13 @@
 
 
 #AUTHOR
-#   Rene Warren (c) 2006-2016
+#   Rene Warren (c) 2006-2017
 #   Short Sequence Assembly by K-mer search and 3' Extension (SSAKE)
 #   rwarren at bcgsc.ca
 
 #NAME
-#   SSAKE Rene Warren, January 2016
+#   SSAKE Rene Warren, April 2017
+#   v3.8.5+ Bug fix (only affected targeted de novo assembly -s mode)
 #   v3.8.4+ Improvements to the TASR modules, recruiting pairs when reads have a k-mer match
 #   v3.8.3+ Included option to ignore reads making up the consensus base extension (-y)
 #   v3.8.3+ Included tie-breaker option (-q) when determining consensus from equal-coverage bases 
@@ -36,7 +37,7 @@
 #   If you use SSAKE, the SSAKE code or ideas, please cite our work
 
 #LICENSE
-#   SSAKE Copyright (c) 2006-2016 Canada's Michael Smith Genome Science Centre.  All rights reserved.
+#   SSAKE Copyright (c) 2006-2017 Canada's Michael Smith Genome Science Centre.  All rights reserved.
 
 #   This program is free software; you can redistribute it and/or
 #   modify it under the terms of the GNU General Public License
@@ -59,7 +60,7 @@ use vars qw($opt_f $opt_m $opt_o $opt_v $opt_r $opt_p $opt_d $opt_k $opt_a $opt_
 getopts('f:m:o:v:r:p:d:k:a:z:e:g:s:t:b:c:x:n:h:i:w:j:q:y:');
 my ($targetwordlen,$base_overlap,$min_overlap,$verbose,$MIN_READ_LENGTH,$SEQ_SLIDE,$min_base_ratio,$paired,$min_links,$max_link_ratio,$contig_size_cutoff,$insert_stdev,$unpaired_file,$seed_file,$max_trim,$base_name,$tracked,$forcetrack,$max_count_trim,$min_tig_overlap,$npad_gaps,$ignorehead,$space_restriction,$min_depth_of_coverage,$tie_breaker,$ignore_read)=(15,2,20,0,21,1,0.7,0,4,0.50,100,0.75,"no-g","no-targetSeed",0,"",0,0,10,20,0,0,0,0,0,0);
 
-my $version = "[v3.8.4]";
+my $version = "[v3.8.5]";
 my $dev = "rwarren\@bcgsc.ca";
 my $per;
 my $MAX = 0;
@@ -79,7 +80,7 @@ if(! $opt_f || ! $opt_w){
    print "-w  Minimum depth of coverage allowed for contigs (e.g. -w 1 = process all reads [v3.7 behavior], required)\n";
    print "    *The assembly will stop when 50+ contigs with coverage < -w have been seen.*\n";
    print "-s  Fasta file containing sequences to use as seeds exclusively (specify only if different from read set, optional)\n";
-   print "\t-i Apply read space restriction to seeds (TASR behavior) while -s option in use (-i 1 = yes, default = no, optional)\n"; 
+   print "\t-i Apply read space restriction to seeds while -s option in use (-i 1 = yes, default = no, optional)\n"; 
    print "\t-j Target sequence word size to hash (default -j $targetwordlen)\n";
    print "-m  Minimum number of overlapping bases with the seed/contig during overhang consensus build up (default -m $min_overlap)\n";
    print "-o  Minimum number of reads needed to call a base during an extension (default -o $base_overlap)\n";
@@ -326,7 +327,8 @@ foreach my $seq (sort {$seed->{$b}{'count'}<=>$seed->{$a}{'count'}} keys %$seed)
       my $reversetig = reverseComplement($seqrc);                   ### return to sequence, as provided 
       my $trimmed_length = length($start_sequence) - 2*($max_trim);
 
-      if($leng > $trimmed_length){ ### commented out: && $start_sequence ne $seqrc && $start_sequence ne $reversetig
+      if($leng > $trimmed_length || ($reads_needed > 1 && $opt_s)){ ### second conditional is similar to TASR, output contig if targeted assembly mode and more reads have been recruited.
+	 ### commented out: && $start_sequence ne $seqrc && $start_sequence ne $reversetig
          $tig_length->{$tig_count} = $leng;
          my $cov =  $total_bases / $leng;
          $low_total++ if ($cov < $min_depth_of_coverage);
@@ -1420,11 +1422,13 @@ sub loadSeed{
       while(<IN>){
       chomp;
 
-      if (/\>(\S+)/){
+      if (/^\>(\S+)/){
          my $head=$1;
          my $subseq_length = length($subseq);
          $MAX=$subseq_length if ($subseq_length > $MAX);
-         if($head ne $prev && $subseq ne '' && $subseq_length >= $MIN_READ_LENGTH && $subseq_length >= $min_overlap){
+	 #print "$subseq...$subseq_length >= $MIN_READ_LENGTH && $subseq_length >= $min_overlap\n";
+	 if($head ne $prev && $subseq ne '' && $subseq_length >= $MIN_READ_LENGTH && $subseq_length >= $min_overlap){
+#print "$head <<< $prev\n";
             my $ucsub = uc($subseq);
             $seed->{$ucsub}{'count'}++;
             $seed->{$ucsub}{'names'}{$prev}="";
@@ -1437,11 +1441,11 @@ sub loadSeed{
                $seedsplit->{$word_rc}=1;
             }
 
-            if($subseq=~/([NX])/i){print "WARNING: the fasta sequence >$prev in your seed file contains characters other than ACGT (i.e. $1) and may prevent proper contig extension.\n";}
+            if($subseq=~/([BDEFHIJKLMNOPQRSUVWXYZ])/i){print "WARNING: the fasta sequence >$prev in your seed file contains characters other than ACGT (i.e. $1) and may prevent proper contig extension.\n";}
          }
          $subseq='';
          $prev=$head;
-      }elsif(/^([ACGTNX]*)$/i){
+      }elsif(/(\S+)/i){
          $subseq .= $_;
       }
    }
@@ -1460,7 +1464,7 @@ sub loadSeed{
          $seedsplit->{$word_rc}=1;
       }
 
-      if($subseq=~/([NX])/i){print "WARNING: the fasta sequence >$prev in your seed file contains characters other than ACGT (i.e. $1) and may prevent proper contig extension.\n";}
+      if($subseq=~/([BDEFHIJKLMNOPQRSUVWXYZ])/i){print "WARNING: the fasta sequence >$prev in your seed file contains characters other than ACGT (i.e. $1) and may prevent proper contig extension.\n";}
    }
  
    close IN;

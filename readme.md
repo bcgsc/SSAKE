@@ -1,6 +1,6 @@
 # SSAKE
 ## Short Sequence Assembly by K-mer search and 3' read Extension
-## SSAKE v3.8.4 Rene L. Warren, 2006-2017
+## SSAKE v3.8.5 Rene L. Warren, 2006-2017
 ## email: rwarren [at] bcgsc [dot] ca
 ## Visit www.bcgsc.ca/bioinfo/software/ssake for additional information
 
@@ -24,17 +24,22 @@ TQSfastq.py -f myfile.fq -t 20 -c 30 -e 64
 
 example:
 <pre>
-~/ssake_v3.8.4/tools/TQSfastq.py -f ../myIlluminaSeqLane_1.fq -c 30 -t 20  ##mate no.1
-~/ssake_v3.8.4/tools/TQSfastq.py -f ../myIlluminaSeqLane_2.fq -c 30 -t 20  ##mate no.2
-~/ssake_v3.8.4/tools/makePairedOutput2UNEQUALfiles.pl ../myIlluminaSeqLane_1.fq_T20C20E64.trim.fa ../myIlluminaSeqLane_2.fq_T20C20E64.trim.fa
+~/ssake_v3.8.5/tools/TQSfastq.py -f ../myIlluminaSeqLane_1.fq -c 30 -t 20  ##mate no.1
+~/ssake_v3.8.5/tools/TQSfastq.py -f ../myIlluminaSeqLane_2.fq -c 30 -t 20  ##mate no.2
+~/ssake_v3.8.5/tools/makePairedOutput2UNEQUALfiles.pl ../myIlluminaSeqLane_1.fq_T20C20E64.trim.fa ../myIlluminaSeqLane_2.fq_T20C20E64.trim.fa
 will produced "paired.fa" and "unpaired.fa"
-~/ssake_v3.8.4/SSAKE -f paired.fa -g unpaired.fa -p 1 -m 17 -o 4 -c 1 -w 5
+~/ssake_v3.8.5/SSAKE -f paired.fa -g unpaired.fa -p 1 -m 17 -o 4 -c 1 -w 5
 </pre>
 
 The scripts are located in ./tools subdirectory included with this release.
 It is recommended that you run TQS.py/TQSfastq.py for every tile (batch job) and cat the outputted fasta file, especially if your data set is large (e.g. entire flowcell)
 
 For trimming paired-end sequences (using _seq.txt and _prb.txt from Illumina), please refer to TRIMMING_PAIRED_READS.README located in the ./tools subdirectory
+
+### What's new in v3.8.5 ?
+----------------------
+
+Fixed a bug that manifested when running SSAKE in targeted (-s) de novo assembly mode. Contig sequences as long as the seed sequence were previously misclassified as singlets.
 
 
 ### What's new in v3.8.4 ?
@@ -83,7 +88,7 @@ cat Assemble_1_R1.fastq_T30C100E33.trim.fa |perl -ne 'if(/^(\>\@\S+)/){print "$1
 ./tools/makePairedOutput2UNEQUALfiles.pl Assemble_1_R1.fastq_T30C100E33.trimFIX.fa Assemble_1_R2.fastq_T30C100E33.trimFIX.fa 400
 ./Syrupy-1.4.0/scripts/syrupy.py ./SSAKE -f CC57C_paired.fa -p 1 -g CC57C_unpaired.fa -m 20 -w 5 -b run2014
 
-./ssake_v3.8.4/tools/getStats.pl run2014.contigs
+./ssake_v3.8.5/tools/getStats.pl run2014.contigs
 </pre>
 
 TRY IT OUT BY SIMPLY RUNNING:
@@ -118,8 +123,8 @@ Size Range|bases|sequences
 1000-10000|145649|32
 
 <pre>
-./ssake_v3.8.4/tools/makeFastaFileFromScaffolds.pl run2014.scaffolds
-./ssake_v3.8.4/tools/getStats.pl run2014.scaffolds.fa
+./ssake_v3.8.5/tools/makeFastaFileFromScaffolds.pl run2014.scaffolds
+./ssake_v3.8.5/tools/getStats.pl run2014.scaffolds.fa
 </pre>
 
 Scaffold sequence stats
@@ -239,8 +244,8 @@ SSAKE might not be suited to work with 454-type reads.  Simply because recurring
 
 Download the tar ball, gunzip and extract the files on your system using:
 <pre>
-gunzip ssake_v3-8-4.tar.gz
-tar -xvf ssake_v3-8-4.tar
+gunzip ssake_v3-8-5.tar.gz
+tar -xvf ssake_v3-8-5.tar
 </pre>
 Change the shebang line of SSAKE to point to the version of perl installed on your system and you're good to go.
 
@@ -269,7 +274,7 @@ Warren RL, Sutton GG, Jones SJM, Holt RA.  2007.  Assembling millions of short D
 <pre>
 e.g. SSAKE -f paired.fa -m 17 -o 4 -r 0.7 -p 1 -c 1 -e 0.75 -k 2 -a 0.6 -z 50 -w 5 -g unpaired.fa 
 
-Usage: ./SSAKE [v3.8.4]
+Usage: ./SSAKE [v3.8.55555]
 -f  File containing all the [paired (-p 1)] reads (required)
 	  With -p 1:
 	! Target insert size must be indicated at the end of the header line (e.g. :200 for a 200bp insert)
