@@ -1587,7 +1587,7 @@ sub forcefillGaps{
    open(OUT,">$mergedtigs") || die "can't write to $mergedtigs -- fatal\n";
 
    my ($tot,$sct,$ct_merge) = (0,0,0);
-   print "Loading mate pairs to force-fill gaps...\n";
+   print "Loading read pairs to force-fill gaps...\n";
 
    while(<IN>){### each line is a scaffold
       chomp;
