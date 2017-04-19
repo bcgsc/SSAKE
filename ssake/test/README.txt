@@ -10,7 +10,7 @@ A) Testing the distribution with very short reads:
 
 B) Testing the targeted assembly using a seed/target sequence:
 
-../SSAKE -f Herpesvirus_3.60kb.reads.fa -m 16 -o 2 -w 5 -b seedtest -c 1 -s Herpesvirus_3.60kb.seed.fa -i 1 -j 20
+../SSAKE -f Herpesvirus_3.60kb.reads.fa -m 16 -o 2 -w 5 -b seedtest -c 1 -s Herpesvirus_3.60kb.seed.fa -u 1 -i 0 -j 20
 
 
 C) Testing SSAKE on real (experimental) MiSeq sequence data
@@ -39,7 +39,7 @@ or
 
 (just the assembly)
 
-This is illumina MiSeq base space data (one tenth of 2500-fold coverage run
+This is illumina MiSeq base space data (one tenth of 2500-fold coverage run)
 sequence ~ 250X, 550bp fragments PE300
 
 *compare your assembly to:

@@ -39,13 +39,13 @@ For trimming paired-end sequences (using _seq.txt and _prb.txt from Illumina), p
 ### What's new in v3.8.5 ?
 ----------------------
 
-Fixed a bug that manifested when running SSAKE in targeted (-s) de novo assembly mode. Contig sequences as long as the seed sequence were previously misclassified as singlets.
+Implements targeted de novo assembly. Fixed a bug that manifested when running SSAKE in targeted (-s) de novo assembly mode. Contig sequences as long as the seed sequence were previously misclassified as singlets.
 
 
 ### What's new in v3.8.4 ?
 ----------------------
 
-Improvements to the targeted assembly functionality, recruiting whole read pairs for de novo assembly when at least one read has a k-mer match. This has the potential to extend the reconstructed contigs by 2X the library fragment size (upstream and downstream) of the target sequence when run in targeted de novo assembly mode -s and -i 0 (default).
+Improvements to the targeted assembly functionality, recruiting whole read pairs for de novo assembly when at least one read has a k-mer match. This has the potential to extend the reconstructed contigs by 2X the library fragment size (upstream and downstream) of the target sequence when run in targeted de novo assembly mode -s and -i 1 (default).
 
 
 ### What's new in v3.8.3 ?
@@ -155,7 +155,7 @@ Size Range|bases|sequences
 ### What's new in v3.7+ ?
 ---------------------
 
-v3.7+ Improved support for seed-based -s assemblies, notably read-space restriction option -i (TASR behavior, without fastq support)
+v3.7+ Improved support for seed-based -s assemblies, notably read-space restriction option -u (TASR behavior, without fastq support)
 
 
 ### What's new in v3.6+ ?
@@ -284,8 +284,9 @@ Usage: ./SSAKE [v3.8.55555]
 -w  Minimum depth of coverage allowed for contigs (e.g. -w 1 = process all reads [v3.7 behavior], required)
     *The assembly will stop when 50+ contigs with coverage < -w have been seen.*
 -s  Fasta file containing sequences to use as seeds exclusively (specify only if different from read set, optional)
-	-i Apply read space restriction to seeds (TASR behavior) while -s option in use (-i 1 = yes, default = no, optional)
-	-j Target sequence word size to hash (default -j 15)
+        -i Independent (de novo) assembly  i.e Targets used to recruit reads for de novo assembly, not guide/seed reference-based assemblies (-i 1 = yes (default), 0 = no, optional)
+        -j Target sequence word size to hash (default -j 15)
+        -u Apply read space restriction to seeds while -s option in use (-u 1 = yes, default = no, optional)
 -m  Minimum number of overlapping bases with the seed/contig during overhang consensus build up (default -m 20)
 -o  Minimum number of reads needed to call a base during an extension (default -o 2)
 -r  Minimum base ratio used to accept a overhang consensus base (default -r 0.7)
@@ -317,7 +318,7 @@ compare your results with Herpesvirus_3.60kb.reference.fa
 ** This error-rich, simulated data set was made available as part of the VCAKE v1.0 distribution
 it represents a 60,000 bp stretch of the NC_001348.1 human herpes virus 3 **
 
-run ../SSAKE -f Herpesvirus_3.60kb.reads.fa -m 16 -o 2 -w 5 -b seedtest -c 1 -s Herpesvirus_3.60kb.seed.fa -i 1 -j 20 
+run ../SSAKE -f Herpesvirus_3.60kb.reads.fa -m 16 -o 2 -w 5 -b seedtest -c 1 -s Herpesvirus_3.60kb.seed.fa -u 1 -i 0 -j 20 
 The assembly above uses a single seed sequence located in (Herpesvirus_3.60kb.seed.fa)
 compare your results with Herpesvirus_3.60kb.reference.fa to see how successful the assembly was
 
@@ -327,7 +328,7 @@ A) Testing the distribution with very short reads:
 ../SSAKE -f Herpesvirus_3.60kb.reads.fa -m 16 -o 2 -w 5 -c 1 
 
 B) Testing the targeted assembly using a seed/target sequence:
-../SSAKE -f Herpesvirus_3.60kb.reads.fa -m 16 -o 2 -w 5 -b seedtest -c 1 -s Herpesvirus_3.60kb.seed.fa -i 1 -j 20
+../SSAKE -f Herpesvirus_3.60kb.reads.fa -m 16 -o 2 -w 5 -b seedtest -c 1 -s Herpesvirus_3.60kb.seed.fa -u 1 -i 0 -j 20
 
 C) Testing SSAKE on real (experimental) Illumina sequence data
 
