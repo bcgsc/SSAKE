@@ -8,7 +8,7 @@
 
 #NAME
 #   SSAKE Rene Warren, April 2017
-#   v3.8.5+ Bug fix (only affected targeted de novo assembly -s mode)
+#   v3.8.5+ Implements targeted de novo assembly. Bug fix (only affected targeted de novo assembly -s mode)
 #   v3.8.4+ Improvements to the TASR modules, recruiting pairs when reads have a k-mer match
 #   v3.8.3+ Included option to ignore reads making up the consensus base extension (-y)
 #   v3.8.3+ Included tie-breaker option (-q) when determining consensus from equal-coverage bases 
@@ -146,7 +146,7 @@ if($opt_s && ! -e $opt_s){### seed file specified, but does not exist
    $independent = $opt_i;
    if($independent >= 1 || $independent < 0 || $independent eq ""){
       $independent = 1;
-      $space_restriction = 1;###restrict the space to that of the target when doing targeted de novo assembly -i mode
+      $space_restriction = 1;###restrict the space to that of the target when doing targeted de novo assembly, -i mode
    }
 }
 
@@ -159,7 +159,7 @@ if ($base_name eq ""){
       $base_name .= "_e" . $insert_stdev . "_k" . $min_links . "_a" . $max_link_ratio . "_z" . $contig_size_cutoff . "_x" . $min_tig_overlap  . "_g-" . $display_unpaired_file;
    }
    if($opt_s){
-      $base_name .= "_s-" . $display_seed_file . "_i" . $independent . "_j-" . $targetwordlen . "_u-" . $space_restriction;
+      $base_name .= "_s-" . $display_seed_file . "_i-" . $independent . "_j-" . $targetwordlen . "_u-" . $space_restriction;
    }
 
    my $pid_num = getpgrp(0);
@@ -238,26 +238,23 @@ if(-e $opt_s){
    print LOG $use_seed_message;
    print $use_seed_message if ($verbose);
    ($seed,$seedsplit) = &loadSeed($opt_s,$targetwordlen); 
-
-
-
 }
 
 my($set,$bin,$matepair);
 ($set,$bin,$matepair) = &readFasta($matepair,$set,$bin,$file,$short,$paired,$encoded,$seedsplit,$space_restriction,$targetwordlen,$ignorehead);
 ($set,$bin,$matepair) = &readFasta($matepair,$set,$bin,$unpaired_file,$short,0,$encoded,$seedsplit,$space_restriction,$targetwordlen,$ignorehead) if (-e $opt_g);
 
-if(! $opt_s){
-   $seed = $set;
-   $TRACK_COUNT = 0;
-}else{
-   if($independent){
+if(! $opt_s){### not file provided as seed sequences
+   $seed = $set;     ### the sequencing read set
+   $TRACK_COUNT = 0; 
+}else{### file provided as seed
+   if($independent){### de novo targeted assembly
       my $ind_message = "-i has been set to 1, which means the target sequences are USED for recruiting reads for de novo assembly, NOT target-based reference guided assemblies\n";
       printf $ind_message;
       print LOG $ind_message;
       $seed = {};
-      $seed = $set;
-   }else{
+      $seed = $set;  ### the sequencing read set
+   }else{### seed-guided assembly extension
       my $ind_message = "-i has been set to 0, which means the target sequences are USED for recruiting reads for target-based reference guided assemblies (only de novo extension on the ends\n";
       printf $ind_message;
       print LOG $ind_message;
