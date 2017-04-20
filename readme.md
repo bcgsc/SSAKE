@@ -226,17 +226,17 @@ Side-by-side comparison between ssake2.0 and vcake1.0 indicates that SSAKE is ne
 
 The python version 2.0 (released in ssake_v2.0.tar.gz and distributed under ./tools) has not yet been fully tested.
 Due to SSAKE's memory requirements, you would need a version
-of the perl interpreter compiled for 64-bit computers if you intend to cluster millions of short sequences.
+of the perl interpreter compiled for 64-bit computers if you intend to assemble millions of short sequences.
 Development of SSAKE was done using perl v5.8.5 built for x86_64-linux-thread-multi
 
 With ssake_3.2.pl -p 0
-You can cluster ~5 million 25-mers with SSAKE on a computer with 4GB RAM  
-You can cluster 60-80 million 25-mers with SSAKE on a computer with 32GB RAM
+You can assemble ~5 million 25-mers with SSAKE on a computer with 4GB RAM  
+You can assemble 60-80 million 25-mers with SSAKE on a computer with 32GB RAM
 
 PLEASE READ:
 *When using paired-end reads (-p 1), SSAKE tracks in memory all paired reads located in contigs >= z.  That means that the memory usage will increase drastically with the size of your data set.  Just be aware of this limitation and don't be surprised if you observe a lot of data swapping to disk if you attempt to run SSAKE on a machine with little RAM.  
 
-SSAKE might not be suited to work with 454-type reads.  Simply because recurring base insertions/deletions errors, such as those commonly seen in homopolymeric regions, will not cluster well in the context of the SSAKE algorithm scheme. Sanger reads are ok, as long as reads are quality-trimmed.
+SSAKE might not be suited to work with 454-type reads.  Simply because recurring base insertions/deletions errors, such as those commonly seen in homopolymeric regions, will not assemble well in the context of the SSAKE algorithm scheme. Sanger reads are ok, as long as reads are quality-trimmed.
 
 
 ### Install
@@ -274,7 +274,7 @@ Warren RL, Sutton GG, Jones SJM, Holt RA.  2007.  Assembling millions of short D
 <pre>
 e.g. SSAKE -f paired.fa -m 17 -o 4 -r 0.7 -p 1 -c 1 -e 0.75 -k 2 -a 0.6 -z 50 -w 5 -g unpaired.fa 
 
-Usage: ./SSAKE [v3.8.55555]
+Usage: ./SSAKE [v3.8.5]
 -f  File containing all the [paired (-p 1)] reads (required)
 	  With -p 1:
 	! Target insert size must be indicated at the end of the header line (e.g. :200 for a 200bp insert)
@@ -437,7 +437,7 @@ Accurate scaffolding depends on many factors.  Number and nature of repeats in y
 
 3. Using a seed sequence file
 
-If the -s option is set and points to a valid fasta file, the DNA sequences comprised in that file will populate the hash table and be used exclusively as seeds to nucleate contig extensions (they will not be utilized to build the prefix tree).  In that scheme, every unique seed will be used in turn to nucleate an extension, using short reads found in the tree (specified in -f).  This feature might be useful if you already have characterized sequences & want to increase their length using short reads.  That said, since the short reads are not used as seeds when -s is set, they will not cluster to one another WITHOUT a seed sequence file.  Also, to speed up the assembly, no imbedded reads (i.e. those aligning to the seed in their entirety) are considered.  Only reads that contribute to extending a seed sequence are noted.
+If the -s option is set and points to a valid fasta file, the DNA sequences comprised in that file will populate the hash table and be used exclusively as seeds to nucleate contig extensions (they will not be utilized to build the prefix tree).  In that scheme, every unique seed will be used in turn to nucleate an extension, using short reads found in the tree (specified in -f).  This feature might be useful if you already have characterized sequences & want to increase their length using short reads.  That said, since the short reads are not used as seeds when -s is set, they will not co-assemble with one another WITHOUT a seed sequence file - unless you run SSAKE in targeted de novo assembly mode (see below).  Also, to speed up the assembly, no imbedded reads (i.e. those aligning to the seed in their entirety) are considered.  Only reads that contribute to extending a seed sequence are noted.
 
 When -s is set, the .contigs file lists all extended seeds, even if it's by a single base.  The .singlets will ONLY list seeds that could not be extended.  Unassembled microreads will NOT be outputted. 
 
@@ -591,7 +591,7 @@ In this order: read name [template th -p 1 :: name followed with 1 or 2, corresp
 ### SSAKE does not
 --------------
 
-1. Take into consideration base quality scores.  It is up to the user to process the sequence data before clustering with SSAKE.
+1. Take into consideration base quality scores.  It is up to the user to process the sequence data before assembling with SSAKE.
 2. Consider sequence read having any character other than A,C,G,T and will skip these reads entirely while reading the fasta file. 
 
 Note: Python scripts (TQS.py, TQSfastq.py, TQSexport.fq) are provided to help trim poor quality bases off Illumina sequences. Refer to TQS.readme and TRIMMING_PAIRED_READS.README included in this distribution (in the ./tools subdirectory) for information on how to run those programs
