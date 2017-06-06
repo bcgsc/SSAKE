@@ -100,6 +100,7 @@ cd test;./MiSeqCampylobacterAssembly.sh
 
 Contig sequence stats
 --------------------------------------------------------------------------------
+
 Metric|Value
 -----|-----
 Mean (nt)|10476.89
@@ -115,12 +116,12 @@ N20|64969
 N50|41436
 N80|17465
 
-Size Range|bases|sequences
+Size Range (bp)|bases|sequences
 -----|-----|-----
-100000 or more|119107|1
-10000-100000|1951445|63
 200-1000|36330|119
 1000-10000|145649|32
+10000-100000|1951445|63
+100000 or more|119107|1
 
 <pre>
 ./ssake_v3.8.5/tools/makeFastaFileFromScaffolds.pl run2014.scaffolds
@@ -129,6 +130,7 @@ Size Range|bases|sequences
 
 Scaffold sequence stats
 --------------------------------------------------------------------------------
+
 Metric|Value
 -----|-----
 Mean (nt)|14931.05
@@ -144,12 +146,12 @@ N20|227805
 N50|124387
 N80|59173
 
-Size Range|bases|sequences
+Size Range (bp)|bases|sequences
 -----|-----|-----
-100000 or more|1350704|8
-10000-100000|805378|18
 200-1000|33684|113
 1000-10000|63291|12
+10000-100000|805378|18
+100000 or more|1350704|8
 
 
 ### What's new in v3.7+ ?
