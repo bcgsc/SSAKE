@@ -1,4 +1,4 @@
-![Logo](https://github.com/warrenlr/ssake/blob/master/ssake-logo.png =0.5x)
+![Logo](https://github.com/warrenlr/ssake/blob/master/ssake-logo.png =100x)
 
 # SSAKE
 ## Short Sequence Assembly by K-mer search and 3' read Extension
