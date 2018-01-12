@@ -1,4 +1,4 @@
-![](https://github.com/warrenlr/ssake/blob/master/ssake-logo.png | width=100)
+![Logo](https://github.com/warrenlr/ssake/blob/master/ssake-logo.png | width=100)
 
 
 # SSAKE
