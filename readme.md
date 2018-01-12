@@ -1,4 +1,9 @@
-![Logo](https://github.com/warrenlr/ssake/blob/master/ssake-logo.png =100x)
+![Logo](https://github.com/warrenlr/ssake/blob/master/ssake-logo.png)
+
+img[alt="Logo"] { 
+  max-width:  20px; 
+  display: block;
+}
 
 # SSAKE
 ## Short Sequence Assembly by K-mer search and 3' read Extension
