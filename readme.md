@@ -1,3 +1,5 @@
+![Logo](https://github.com/warrenlr/ssake/blob/master/ssake-logo.png)
+
 # SSAKE
 ## Short Sequence Assembly by K-mer search and 3' read Extension
 ## SSAKE v3.8.5 Rene L. Warren, 2006-2017
