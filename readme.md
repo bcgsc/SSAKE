@@ -42,14 +42,14 @@ For trimming paired-end sequences (using _seq.txt and _prb.txt from Illumina), p
 ### What's new in v4.0 ?
 ----------------------
 
-Initial support for linked reads, such as those produced by the 10x Genomics Chromium technology
-Linked reads are supplied in the original SSAKE format, but the barcode information is indicated by sequence following a single underscore "_"
-Added a C. elegans linked read data assembly script in the test folder
-Scaffolding options consistent with that of the LINKS scaffolder
-SSAKE no longer sorts by/prioritizes high multiplicity reads for assembly
-Streamlined file names
-Deprecated force-fill gap feature
-Bug fixes
+-Initial support for linked reads, such as those produced by the 10x Genomics Chromium technology
+-Linked reads are supplied in the original SSAKE format, but the barcode information is indicated by sequence following a single underscore "_"
+-Added a C. elegans linked read data assembly script in the test folder
+-Scaffolding options consistent with that of the LINKS scaffolder
+-SSAKE no longer sorts by/prioritizes high multiplicity reads for assembly
+-Streamlined file names
+-Deprecated force-fill gap feature
+-Bug fixes
 
 
 ### What's new in v3.8.5 ?
@@ -346,6 +346,7 @@ SSAKE v4.0 run tests (all tests provided in the test folder)
 January 2018
 
 Contigs:
+
 n|n:500|L50|min|N80|N50|N20|E-size|max|sum|time (h:mm:ss)|RAM (GB)|name
 ---|---|---|---|---|---|---|---|---|---|---|---|---
 206|109|21|562|18061|32736|64004|40613|107028|2222124|0:06:58|3.5|CC57C_contigs.fa
@@ -357,6 +358,7 @@ n|n:500|L50|min|N80|N50|N20|E-size|max|sum|time (h:mm:ss)|RAM (GB)|name
 7|1|1|60000|60000|60000|60000|60000|60000|60000|0:00:22|0.2|HStestInstall_contigs.fa
 
 Scaffolds:
+
 n|n:500|L50|min|N80|N50|N20|E-size|max|sum|name
 ---|---|---|---|---|---|---|---|---|---|---
 135|42|6|585|47914|128053|233500|159643|382374|2223249|CC57C_scaffolds.fa
