@@ -3,7 +3,7 @@
 
 # SSAKE
 ## Short Sequence Assembly by K-mer search and 3' read Extension
-## SSAKE v3.8.5 Rene L. Warren, 2006-2017
+## SSAKE v4.0 Rene L. Warren, 2006-2018
 ## email: rwarren [at] bcgsc [dot] ca
 ## Visit www.bcgsc.ca/bioinfo/software/ssake for additional information
 
@@ -27,17 +27,30 @@ TQSfastq.py -f myfile.fq -t 20 -c 30 -e 64
 
 example:
 <pre>
-~/ssake_v3.8.5/tools/TQSfastq.py -f ../myIlluminaSeqLane_1.fq -c 30 -t 20  ##mate no.1
-~/ssake_v3.8.5/tools/TQSfastq.py -f ../myIlluminaSeqLane_2.fq -c 30 -t 20  ##mate no.2
-~/ssake_v3.8.5/tools/makePairedOutput2UNEQUALfiles.pl ../myIlluminaSeqLane_1.fq_T20C20E64.trim.fa ../myIlluminaSeqLane_2.fq_T20C20E64.trim.fa
+~/ssake_v4.0/tools/TQSfastq.py -f ../myIlluminaSeqLane_1.fq -c 30 -t 20  ##mate no.1
+~/ssake_v4.0/tools/TQSfastq.py -f ../myIlluminaSeqLane_2.fq -c 30 -t 20  ##mate no.2
+~/ssake_v4.0/tools/makePairedOutput2UNEQUALfiles.pl ../myIlluminaSeqLane_1.fq_T20C20E64.trim.fa ../myIlluminaSeqLane_2.fq_T20C20E64.trim.fa
 will produced "paired.fa" and "unpaired.fa"
-~/ssake_v3.8.5/SSAKE -f paired.fa -g unpaired.fa -p 1 -m 17 -o 4 -c 1 -w 5
+~/ssake_v4.0/SSAKE -f paired.fa -g unpaired.fa -p 1 -m 17 -o 4 -c 1 -w 5
 </pre>
 
 The scripts are located in ./tools subdirectory included with this release.
 It is recommended that you run TQS.py/TQSfastq.py for every tile (batch job) and cat the outputted fasta file, especially if your data set is large (e.g. entire flowcell)
 
 For trimming paired-end sequences (using _seq.txt and _prb.txt from Illumina), please refer to TRIMMING_PAIRED_READS.README located in the ./tools subdirectory
+
+### What's new in v4.0 ?
+----------------------
+
+Initial support for linked reads, such as those produced by the 10x Genomics Chromium technology
+Linked reads are supplied in the original SSAKE format, but the barcode information is indicated by sequence following a single underscore "_"
+Added a C. elegans linked read data assembly script in the test folder
+Scaffolding options consistent with that of the LINKS scaffolder
+SSAKE no longer sorts by/prioritizes high multiplicity reads for assembly
+Streamlined file names
+Deprecated force-fill gap feature
+Bug fixes
+
 
 ### What's new in v3.8.5 ?
 ----------------------
@@ -90,8 +103,8 @@ cat Assemble_1_R2.fastq_T30C100E33.trim.fa |perl -ne 'if(/^(\>\@\S+)/){print "$1
 cat Assemble_1_R1.fastq_T30C100E33.trim.fa |perl -ne 'if(/^(\>\@\S+)/){print "$1a\n";}else{print;}' >Assemble_1_R1.fastq_T30C100E33.trimFIX.fa
 ./tools/makePairedOutput2UNEQUALfiles.pl Assemble_1_R1.fastq_T30C100E33.trimFIX.fa Assemble_1_R2.fastq_T30C100E33.trimFIX.fa 400
 ./Syrupy-1.4.0/scripts/syrupy.py ./SSAKE -f CC57C_paired.fa -p 1 -g CC57C_unpaired.fa -m 20 -w 5 -b run2014
-
-./ssake_v3.8.5/tools/getStats.pl run2014.contigs
+./ssake_v4.0/tools/getStats.pl run2014_contigs.fa
+./ssake_v4.0/tools/getStats.pl run2014_scaffolds.fa
 </pre>
 
 TRY IT OUT BY SIMPLY RUNNING:
@@ -100,61 +113,6 @@ TRY IT OUT BY SIMPLY RUNNING:
 cd test;./MiSeqCampylobacterAssemblyPIPELINE.sh
 cd test;./MiSeqCampylobacterAssembly.sh
 </pre>
-
-Contig sequence stats
---------------------------------------------------------------------------------
-
-Metric|Value
------|-----
-Mean (nt)|10476.89
-Max (nt)|119107
-Min (nt)|200
-n|215
-Stdev (nt)|19021.54
-Variance (nt)|361818996.83
-TrimmedMean (nt)|2763.44
-Median (nt)|412.00
-Sum (nt)|2252531.00
-N20|64969
-N50|41436
-N80|17465
-
-Size Range (bp)|bases|sequences
------|-----|-----
-200-1000|36330|119
-1000-10000|145649|32
-10000-100000|1951445|63
-100000 or more|119107|1
-
-<pre>
-./ssake_v3.8.5/tools/makeFastaFileFromScaffolds.pl run2014.scaffolds
-./ssake_v3.8.5/tools/getStats.pl run2014.scaffolds.fa
-</pre>
-
-Scaffold sequence stats
---------------------------------------------------------------------------------
-
-Metric|Value
------|-----
-Mean (nt)|14931.05
-Max (nt)|252560
-Min (nt)|200
-n|151
-Stdev (nt)|42086.22
-Variance (nt)|1771250106.52
-TrimmedMean (nt)|349.95
-Median (nt)|288.00
-Sum (nt)|2254589.00
-N20|227805
-N50|124387
-N80|59173
-
-Size Range (bp)|bases|sequences
------|-----|-----
-200-1000|33684|113
-1000-10000|63291|12
-10000-100000|805378|18
-100000 or more|1350704|8
 
 
 ### What's new in v3.7+ ?
@@ -178,7 +136,7 @@ In v3.5, the read pairing logic is used in the extension process.  More specific
 ### What's new in v3.4+ ?
 ---------------------
 
-Version 3.4 exploits paired-end reads to explore possible contig merges within scaffolds (Consecutive contigs >= -z bases must overlap by -m bases or more). Version v3.4.1 allows a user to merge all contigs of a scaffold by padding predicted gaps with Ns (-n 1) and predicted but undetected overlaps with a single (n).  Merged contigs are outputted in the .mergedcontigs file.  The default behaviour (-n 0) is to NOT pad the gaps with Ns (v3.4 behaviour).  In the v3.4.1, the .readposition file tracks read names instead of read sequences as the latter can be inferred from the start and end coordinates.
+Version 3.4 exploits paired-end reads to explore possible contig merges within scaffolds (Consecutive contigs >= -z bases must overlap by -m bases or more). Version v3.4.1 allows a user to merge all contigs of a scaffold by padding predicted gaps with Ns (-n 1) and predicted but undetected overlaps with a single (n).  Merged contigs are outputted in the _mergedcontigs.fa file.  The default behaviour (-n 0) is to NOT pad the gaps with Ns (v3.4 behaviour).  In the v3.4.1, the _readposition.txt file tracks read names instead of read sequences as the latter can be inferred from the start and end coordinates. THIS IS NOW (v4.0) DEPRECATED.
 
 
 ### What's new in v3.3+ ?
@@ -249,8 +207,8 @@ SSAKE might not be suited to work with 454-type reads.  Simply because recurring
 
 Download the tar ball, gunzip and extract the files on your system using:
 <pre>
-gunzip ssake_v3-8-5.tar.gz
-tar -xvf ssake_v3-8-5.tar
+gunzip ssake_v4-0.tar.gz
+tar -xvf ssake_v4-0.tar
 </pre>
 Change the shebang line of SSAKE to point to the version of perl installed on your system and you're good to go.
 
@@ -277,16 +235,17 @@ Warren RL, Sutton GG, Jones SJM, Holt RA.  2007.  Assembling millions of short D
 ### Running SSAKE
 -------------
 <pre>
-e.g. SSAKE -f paired.fa -m 17 -o 4 -r 0.7 -p 1 -c 1 -e 0.75 -k 2 -a 0.6 -z 50 -w 5 -g unpaired.fa 
+e.g. SSAKE -f paired.fa -m 20 -o 3 -r 0.7 -p 1 -c 1 -e 0.75 -l 5 -a 0.3 -z 50 -w 5 -g unpaired.fa 
 
-Usage: ./SSAKE [v3.8.5]
+Usage: ./SSAKE [v4.0]
 -f  File containing all the [paired (-p 1)] reads (required)
-	  With -p 1:
-	! Target insert size must be indicated at the end of the header line (e.g. :200 for a 200bp insert)
-	! Paired reads must be separated by ":"
-	  >template_name:200
-	  ACGACACTATGCATAAGCAGACGAGCAGCGACGCAGCACG:GCGCACGACGCAGCACAGCAGCAGACGAC
--w  Minimum depth of coverage allowed for contigs (e.g. -w 1 = process all reads [v3.7 behavior], required)
+          With -p 1:
+        ! Target insert size must be indicated at the end of the header line (e.g. :400 for a 400bp fragment/insert size)
+        ! Paired reads must be separated by ":"
+          >header:400 (or >header_barcode:400)
+          ACGACACTATGCATAAGCAGACGAGCAGCGACGCAGCACG:GCGCACGACGCAGCACAGCAGCAGACGAC
+-g  Fasta file containing unpaired sequence reads (optional)
+-w  Minimum depth of coverage allowed for contigs (e.g. -w 1 = process all reads [v3.7 behavior], required, recommended -w 5)
     *The assembly will stop when 50+ contigs with coverage < -w have been seen.*
 -s  Fasta file containing sequences to use as seeds exclusively (specify only if different from read set, optional)
         -i Independent (de novo) assembly  i.e Targets used to recruit reads for de novo assembly, not guide/seed reference-based assemblies (-i 1 = yes (default), 0 = no, optional)
@@ -301,16 +260,19 @@ Usage: ./SSAKE [v3.8.5]
 -h  Ignore read name/header *will use less RAM if set to -h 1* (-h 1 = yes, default = no, optional)
 -b  Base name for your output files (optional)
 -z  Minimum contig size to track base coverage and read position (default -z 100, optional)
--q  Break tie when no consensus base at position, select base at random (-q 1 = yes, default = no, optional)
+-q  Break tie when no consensus base at position, pick random base (-q 1 = yes, default = no, optional)
 -p  Paired-end reads used? (-p 1 = yes, default = no, optional)
 -v  Runs in verbose mode (-v 1 = yes, default = no, optional)
-============ Options below only considered with -p 1 ============
+============ scaffolding options below only considered with -p 1 ============
 -e  Error (%) allowed on mean distance   e.g. -e 0.75  == distance +/- 75% (default -e 0.75, optional)
--k  Minimum number of links (read pairs) to compute scaffold (default -k 4, optional)
--a  Maximum link ratio between two best contig pairs *higher values lead to least accurate scaffolding* (default -a 0.5, optional)
--x  Minimum overlap required between contigs to merge adjacent contigs in a scaffold (default -x 20, optional)
--n  N-pad gaps (-n 1 = yes, default = no 0, optional)
--g  Fasta file containing unpaired sequence reads (optional)
+-l  Minimum number of links (read pairs) to compute scaffold (default -k 5, optional)
+-a  Maximum link ratio between two best contig pairs *higher values lead to least accurate scaffolding* (default -a 0.3, optional)
+
+A BASIC PIPELINE TO HELP YOU PREPARE YOUR INPUT PAIRED READS EXISTS (./test/runSSAKE.sh)
+
+USAGE: ./runSSAKE.sh read1.fq read2.fq libraryFragmentLength basename
+
+
 </pre>
 
 ### Test data
@@ -351,15 +313,15 @@ C) Testing SSAKE on real (experimental) Illumina sequence data
 or 
 
 ./MiSeqCampylobacterAssembly.sh
-(just the assembly)
+(read download, assembly)
 
 
 3) Escherichia coli / 2014 Illumina MiSeq data
 
 ./MiSeqEcoliAssembly250XPE300.sh
-(just the assembly)
+(read download, assembly)
 
-This is illumina MiSeq base space data (one tenth of 2500-fold coverage run
+This is illumina MiSeq base space data (one tenth of 2500-fold coverage run)
 sequence ~ 250X, 550bp fragments PE300
 
 *compare your assembly to:
@@ -369,12 +331,43 @@ coliMiSeq300m80.scaffolds.stats1
 
 4) Fusobacterium nucleatum - CRC tumor isolate / Illumina HiSeq 2000 data
 ./HiSeqFusobacteriumAssembly.sh
-(just the assembly)
+(read download, assembly)
 
 
 5) De Novo Targeted assembly of a TMPRSS2:ERG fusion using a prostate adenocarcinoma RNA-seq dataset
 ./runSSAKEtargeted.sh
 (read download,trimming,formatting,assembly)
+
+6) C. elegans linked-read assembly
+./CelegansLinkedReadsAssembly.sh
+(read download, assembly)
+
+SSAKE v4.0 run tests (all tests provided in the test folder)
+January 2018
+
+Contigs:
+n|n:500|L50|min|N80|N50|N20|E-size|max|sum|time (h:mm:ss)|RAM (GB)|name
+---|---|---|---|---|---|---|---|---|---|---|---|---
+206|109|21|562|18061|32736|64004|40613|107028|2222124|0:06:58|3.5|CC57C_contigs.fa
+5352|4949|613|502|19304|44626|90857|58011|305563|95.57e6|4:05:34|79.1|celegansLR_contigs.fa
+101|97|12|687|80150|127399|210819|146845|318067|4606049|0:21:50|9.3|coliMiSeq300m80_contigs.fa
+206|109|21|562|18061|32736|64004|40613|107028|2222124|0:07:22|3.5|Cshowae_contigs.fa
+122|18|1|501|688|18917|18917|12139|18917|30101|0:01:22|0.4|ebola_contigs.fa
+697|560|131|501|2540|4641|8019|5631|19764|1937271|0:10:43|6.0|fusoCC53_contigs.fa
+7|1|1|60000|60000|60000|60000|60000|60000|60000|0:00:22|0.2|HStestInstall_contigs.fa
+
+Scaffolds:
+n|n:500|L50|min|N80|N50|N20|E-size|max|sum|name
+---|---|---|---|---|---|---|---|---|---|---
+135|42|6|585|47914|128053|233500|159643|382374|2223249|CC57C_scaffolds.fa
+4637|4309|491|502|22274|53866|112496|74063|357928|95.59e6|celegansLR_scaffolds.fa
+86|82|5|687|91172|204889|1193524|437907|1193524|4606049|coliMiSeq300m80_scaffolds.fa
+135|42|6|585|47914|128053|233500|159643|382374|2223249|Cshowae_scaffolds.fa
+122|18|1|501|688|18917|18917|12139|18917|30101|ebola_scaffolds.fa
+638|524|120|501|2756|5067|9273|6141|19764|1943677|fusoCC53_scaffolds.fa
+
+stats generated with abyss-fac
+benchmark: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz 128CPU 2TB RAM CentOS7/ 1 thread per assembly
 
 
 ### How it works
@@ -444,7 +437,7 @@ Accurate scaffolding depends on many factors.  Number and nature of repeats in y
 
 If the -s option is set and points to a valid fasta file, the DNA sequences comprised in that file will populate the hash table and be used exclusively as seeds to nucleate contig extensions (they will not be utilized to build the prefix tree).  In that scheme, every unique seed will be used in turn to nucleate an extension, using short reads found in the tree (specified in -f).  This feature might be useful if you already have characterized sequences & want to increase their length using short reads.  That said, since the short reads are not used as seeds when -s is set, they will not co-assemble with one another WITHOUT a seed sequence file - unless you run SSAKE in targeted de novo assembly mode (see below).  Also, to speed up the assembly, no imbedded reads (i.e. those aligning to the seed in their entirety) are considered.  Only reads that contribute to extending a seed sequence are noted.
 
-When -s is set, the .contigs file lists all extended seeds, even if it's by a single base.  The .singlets will ONLY list seeds that could not be extended.  Unassembled microreads will NOT be outputted. 
+When -s is set, the _contigs.fa file lists all extended seeds, even if it's by a single base.  The .singlets will ONLY list seeds that could not be extended.  Unassembled microreads will NOT be outputted. 
 
 Support for sequence target-independent de novo assemblies:
 
@@ -466,20 +459,18 @@ If more than one seed is supplied in the -s file and you're providing paired-end
 
 UNPAIRED:
 
-DNA sequences can be in lower caps as well
-
+DNA sequences can be in lower caps as well (NO UNDERSCORE _ CHARACTER ALLOWED)
 <pre>
->PX1CG_29
+>PX1CG29
 TTAACACTTTCGGATATTTCTGATG
->PX1CG_35
+>PX1CG35
 CTTTCGGATATTTCTGATGAGTCGA
->PX1CG_64
+>PX1CG64
 TTATCTTGATAAAGCAGGAATTACT
 ...
 </pre>
 
 PAIRED:
-
 <pre>
 >2-1-464-197:200
 TGGCTCACCCCTGTAATCCCAGCACT:CTCCCAGGTTCAAGCGATTCTCCTGC
@@ -487,7 +478,27 @@ TGGCTCACCCCTGTAATCCCAGCACT:CTCCCAGGTTCAAGCGATTCTCCTGC
 GTCTGAGGGTCCCAGGAACCAG:TGCCCCAGAGGTGGGAGCAGGGGA
 >2-1-662-655:1000
 TGAATCCCCACCAGGCGCCTTCGG:CACTTTATTATTAATGTACAAAAT
-</pre> 
+...
+</pre>
+
+PAIRED, LINKED READ:
+<pre>
+>2-1-464-197_ACGATGCATGCAGTAG:200
+TGGCTCACCCCTGTAATCCCAGCACT:CTCCCAGGTTCAAGCGATTCTCCTGC
+>2-1-783-425_ACGATGCATGCAGTAG:300
+GTCTGAGGGTCCCAGGAACCAG:TGCCCCAGAGGTGGGAGCAGGGGA
+>2-1-662-655_ATGCATGCATGCTAGC:1000
+TGAATCCCCACCAGGCGCCTTCGG:CACTTTATTATTAATGTACAAAAT
+...
+</pre>
+
+-Note: For linked read, a barcode sequence of any length will do. In fact, any [A-Za-z0-9] characters after the underscore, before : or /\ will be used as barcode sequence to filter the reads. Note that when linked reads are not used, but regular reads are used instead, the original ssake behaviour will take precedence. Note that under NO circumstances should your read contain underscore characters (_) if your reads are NOT linked.
+
+Example input from the C. elegans test data available with the v4.0 distribution:
+<pre>
+>gi|453232919|ref|NCI003284.9|I11747444I11747218I1I0I0I0I0:0:0I0:0:0I98920/1_AAACCTGAGCTTTCAG/:350
+CACATACGAGGGCGTTATTTGAAAAATTTAAAAATCAACATGTTCAAGCGTGCGAAGTGTCAAAATAAAAAAGAAAAAAAAAACGAAAAAAAAAACAGAAAAGGCTGATAAGAGGACGCGTCAAGTTA:ACTGCTCATTTGTCAATCAGCAAGGTACATGAAAACACAGAGCAGGAACCAAAATGCACACAATAAAACTCCCCGTACCCATTGTGTGGTACGCAGTACAAAATGACTGACAATAAGAAAGGGAGAGAGGGATTGAGGCGCCGAATACTTG
+</pre>
 
 -Paired sequences must be concatenated together in one fasta-like entry, separated by ":".  For example, TGGCTCACCCCTGTAATCCCAGCACT:CTCCCAGGTTCAAGCGATTCTCCTGC consists of two paired reads.  Changes to the input was made to allow reads of variable length (e.g. quality-trimmed reads) to be considered by SSAKE.  As of v3-6, the header line [>] must have [:insert_size] at the very end (see above example)
 
@@ -508,26 +519,26 @@ General points:
 
 Output file (-p 0 and -p 1) | Description
 ---|---
-.contigs   | fasta file; All sequence contigs
+_contigs.fa   | fasta file; All sequence contigs
+_scaffolds.fa |fasta file; All sequence scaffolds
 .log       | text file; Logs execution time / errors / pairing stats (if -p is set to 1)
-.short     | text file; Lists sequence reads shorter than a set, acceptable, minimum
-.singlets  | fasta file; All unassembled sequence reads
+_short.txt     | text file; Lists sequence reads shorter than a set, acceptable, minimum
+_singlets.fa  | fasta file; All unassembled sequence reads
 
 Output file (-p 1) | Description
 ---|---
-.pairing_distribution.csv | comma-separated file; 1st column is the calculated distance for each pair (template) with reads that assembled logically within the same contig.  2nd column is the number of pairs at that distance
-.pairing_issues           | text file; Lists all pairing issues encountered between contig pairs and illogical/out-of-bounds pairing
+_pairing-distribution.csv | comma-separated file; 1st column is the calculated distance for each pair (template) with reads that assembled logically within the same contig.  2nd column is the number of pairs at that distance
+_pairing-issues.txt           | text file; Lists all pairing issues encountered between contig pairs and illogical/out-of-bounds pairing
 .scaffolds                | comma-separated file; see below
-.mergedcontigs            | fasta file; All merged/unmerged contigs >= -z bases within scaffolds are listed.  The overlap sequence between contigs (>= -x bases) will be shown in lower case within the merged contig.  Note that *perfect* sequence overlap has to occur between 2 predicted adjacent contigs of a scaffold in order to merge.  It is possible that two contigs merge even though they are NOT predicted to do so (perhaps because insert size range supplied is off or mate pairs are misassembled).  When two consecutive contigs do not physically overlap and the -n option is set to 1, then gaps will be padded with Ns of length corresponding to the predicted gap size m (refer to Understanding the .scaffolds csv file below) and predicted but undetected overlaps with a single (n).
 
 Output file (-c 1*) | Description
 ---|---
-.readposition             | this is a text file listing all whole (fully embedded) reads, start and end coordinate onto the contig (in this order).  For reads aligning on the minus strand, end coordinate is < start coordinate
-.coverage.csv             | this is a comma-separated values file showing the base coverage at every position for any given contig   >  -z
+_readposition.txt             | this is a text file listing all whole (fully embedded) reads, start and end coordinate onto the contig (in this order).  For reads aligning on the minus strand, end coordinate is < start coordinate
+_coverage.csv             | this is a comma-separated values file showing the base coverage at every position for any given contig   >  -z
 *WARNING: ASSOCIATED FILES CAN BECOME VERY LARGE!
 
 
-#### Understanding the .contigs fasta header
+#### Understanding the _contigs.fa fasta header
 ---------------------------------------
 <pre>
 e.g.
@@ -543,7 +554,7 @@ the coverage (C) is calculated using the total number (T) of consensus bases [su
 C = T / G
 
 
-#### Understanding the .scaffolds csv file
+#### Understanding the .scaffolds layout csv file
 -------------------------------------
 <pre>
 e.g.
@@ -562,7 +573,7 @@ Negative m values imply that there's a possible overlap between the contigs.  Bu
 Use makeFastaFileFromScaffolds.pl included in this distribution to make a scaffold fasta file (ordered and oriented contig sequences) using the layout recipe (contig chain) shown above.
 
 
-#### Understanding the .coverage.csv file
+#### Understanding the _coverage.csv file
 ------------------------------------
 <pre>
 e.g.
@@ -572,7 +583,7 @@ e.g.
 Each number represents the number of reads covering that base at that position.
 
 
-#### Understanding the .readposition file
+#### Understanding the _readposition.txt file
 ------------------------------------
 <pre>
 e.g.
@@ -605,7 +616,7 @@ Note: Python scripts (TQS.py, TQSfastq.py, TQSexport.fq) are provided to help tr
 ### License
 -------
 
-SSAKE Copyright (c) 2006-2017 Canada's Michael Smith Genome Science Centre.  All rights reserved.
+SSAKE Copyright (c) 2006-2018 Canada's Michael Smith Genome Science Centre.  All rights reserved.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License

@@ -2,13 +2,14 @@
 
 
 #AUTHOR
-#   Rene Warren (c) 2006-2017
+#   Rene Warren (c) 2006-2018
 #   Short Sequence Assembly by K-mer search and 3' Extension (SSAKE)
 #   rwarren at bcgsc.ca
 
 #NAME
-#   SSAKE Rene Warren, April 2017
-#   v3.8.5+ Implements targeted de novo assembly. Bug fix (only affected targeted de novo assembly -s mode)
+#   SSAKE Rene Warren, Jan 2018
+#   v4.0+ Initial support for linked reads (reads co-located to genomic locus via barcode or other means)
+#   v3.8.5+ Bug fix (only affected targeted de novo assembly -s mode)
 #   v3.8.4+ Improvements to the TASR modules, recruiting pairs when reads have a k-mer match
 #   v3.8.3+ Included option to ignore reads making up the consensus base extension (-y)
 #   v3.8.3+ Included tie-breaker option (-q) when determining consensus from equal-coverage bases 
@@ -37,7 +38,7 @@
 #   If you use SSAKE, the SSAKE code or ideas, please cite our work
 
 #LICENSE
-#   SSAKE Copyright (c) 2006-2017 Canada's Michael Smith Genome Science Centre.  All rights reserved.
+#   SSAKE Copyright (c) 2006-2018 Canada's Michael Smith Genome Science Centre.  All rights reserved.
 
 #   This program is free software; you can redistribute it and/or
 #   modify it under the terms of the GNU General Public License
@@ -55,12 +56,12 @@
 use strict;
 use Getopt::Std;
 use Net::SMTP;
-use vars qw($opt_f $opt_m $opt_o $opt_v $opt_r $opt_p $opt_d $opt_k $opt_a $opt_z $opt_e $opt_g $opt_s $opt_t $opt_b $opt_c $opt_x $opt_n $opt_h $opt_i $opt_w $opt_j $opt_q $opt_y $opt_u);
-#l
-getopts('f:m:o:v:r:p:d:k:a:z:e:g:s:t:b:c:x:n:h:u:w:j:q:y:i:');
-my ($targetwordlen,$base_overlap,$min_overlap,$verbose,$MIN_READ_LENGTH,$SEQ_SLIDE,$min_base_ratio,$paired,$min_links,$max_link_ratio,$contig_size_cutoff,$insert_stdev,$unpaired_file,$seed_file,$max_trim,$base_name,$tracked,$forcetrack,$max_count_trim,$min_tig_overlap,$npad_gaps,$ignorehead,$space_restriction,$min_depth_of_coverage,$tie_breaker,$ignore_read,$independent)=(15,2,20,0,21,1,0.7,0,4,0.50,100,0.75,"no-g","no-targetSeed",0,"",0,0,10,20,0,0,0,0,0,0,1);
+use vars qw($opt_f $opt_m $opt_o $opt_v $opt_r $opt_p $opt_d $opt_l $opt_a $opt_z $opt_e $opt_g $opt_s $opt_t $opt_b $opt_c $opt_x $opt_n $opt_h $opt_i $opt_w $opt_j $opt_q $opt_y $opt_u);
+#k unused letters
+getopts('f:m:o:v:r:p:d:l:a:z:e:g:s:t:b:c:x:n:h:u:w:j:q:y:i:');
+my ($targetwordlen,$base_overlap,$min_overlap,$verbose,$MIN_READ_LENGTH,$SEQ_SLIDE,$min_base_ratio,$paired,$min_links,$max_link_ratio,$contig_size_cutoff,$insert_stdev,$unpaired_file,$seed_file,$max_trim,$base_name,$tracked,$forcetrack,$max_count_trim,$min_tig_overlap,$npad_gaps,$ignorehead,$space_restriction,$min_depth_of_coverage,$tie_breaker,$ignore_read,$independent)=(15,2,20,0,21,1,0.7,0,5,0.3,100,0.75,"no-g","no-targetSeed",0,"",0,0,10,20,0,0,0,0,0,0,1);
 
-my $version = "[v3.8.5]";
+my $version = "[v4.0]";
 my $dev = "rwarren\@bcgsc.ca";
 my $per;
 my $MAX = 0;
@@ -71,13 +72,14 @@ my $illuminaLengthCutoff = 500; ### means all sequence reads greater than this a
 #-------------------------------------------------
 
 if(! $opt_f || ! $opt_w){
-   print "Usage: $0 $version\n";
+   print "\nUsage: $0 $version\n";
    print "-f  File containing all the [paired (-p 1)] reads (required)\n";
    print "\t  With -p 1:\n";
-   print "\t! Target insert size must be indicated at the end of the header line (e.g. :200 for a 200bp insert)\n";
+   print "\t! Target insert size must be indicated at the end of the header line (e.g. :400 for a 400bp fragment/insert size)\n";
    print "\t! Paired reads must be separated by \":\"\n";
-   print "\t  >template_name:200\n\t  ACGACACTATGCATAAGCAGACGAGCAGCGACGCAGCACG:GCGCACGACGCAGCACAGCAGCAGACGAC\n";
-   print "-w  Minimum depth of coverage allowed for contigs (e.g. -w 1 = process all reads [v3.7 behavior], required)\n";
+   print "\t  >header:400 (or >header_barcode:400)\n\t  ACGACACTATGCATAAGCAGACGAGCAGCGACGCAGCACG:GCGCACGACGCAGCACAGCAGCAGACGAC\n";
+   print "-g  Fasta file containing unpaired sequence reads (optional)\n";
+   print "-w  Minimum depth of coverage allowed for contigs (e.g. -w 1 = process all reads [v3.7 behavior], required, recommended -w 5)\n";
    print "    *The assembly will stop when 50+ contigs with coverage < -w have been seen.*\n";
    print "-s  Fasta file containing sequences to use as seeds exclusively (specify only if different from read set, optional)\n";
    print "\t-i Independent (de novo) assembly  i.e Targets used to recruit reads for de novo assembly, not guide/seed reference-based assemblies (-i 1 = yes (default), 0 = no, optional)\n";
@@ -95,13 +97,13 @@ if(! $opt_f || ! $opt_w){
    print "-q  Break tie when no consensus base at position, pick random base (-q 1 = yes, default = no, optional)\n"; 
    print "-p  Paired-end reads used? (-p 1 = yes, default = no, optional)\n";
    print "-v  Runs in verbose mode (-v 1 = yes, default = no, optional)\n";
-   print "============ Options below only considered with -p 1 ============\n";
+   print "============ scaffolding options below only considered with -p 1 ============\n";
    print "-e  Error (%) allowed on mean distance   e.g. -e 0.75  == distance +/- 75% (default -e $insert_stdev, optional)\n";
-   print "-k  Minimum number of links (read pairs) to compute scaffold (default -k $min_links, optional)\n";
+   print "-l  Minimum number of links (read pairs) to compute scaffold (default -k $min_links, optional)\n";
    print "-a  Maximum link ratio between two best contig pairs *higher values lead to least accurate scaffolding* (default -a $max_link_ratio, optional)\n";
-   print "-x  Minimum overlap required between contigs to merge adjacent contigs in a scaffold (default -x $min_tig_overlap, optional)\n";
-   print "-n  N-pad gaps (-n 1 = yes, default = no $npad_gaps, optional)\n";
-   die "-g  Fasta file containing unpaired sequence reads (optional)\n";
+   #print "-x  Minimum overlap required between contigs to merge adjacent contigs in a scaffold (default -x $min_tig_overlap, optional)\n";
+   #print "-n  N-pad gaps (-n 1 = yes, default = no $npad_gaps, optional)\n";
+   die "\nError: Missing mandatory options -f and -w.\n\n";
 }
 
 my $file = $opt_f;
@@ -111,7 +113,7 @@ $min_base_ratio = $opt_r if($opt_r);
 $max_trim = $opt_t if($opt_t);
 $verbose = $opt_v if($opt_v);
 $paired = $opt_p if($opt_p);
-$min_links = $opt_k if($opt_k);
+$min_links = $opt_l if($opt_l);
 $max_link_ratio = $opt_a if($opt_a);
 $contig_size_cutoff = $opt_z if($opt_z);
 $insert_stdev = $opt_e if($opt_e);
@@ -146,7 +148,7 @@ if($opt_s && ! -e $opt_s){### seed file specified, but does not exist
    $independent = $opt_i;
    if($independent >= 1 || $independent < 0 || $independent eq ""){
       $independent = 1;
-      $space_restriction = 1;###restrict the space to that of the target when doing targeted de novo assembly, -i mode
+      $space_restriction = 1;###restrict the space to that of the target when doing targeted de novo assembly -i mode
    }
 }
 
@@ -156,26 +158,27 @@ if ($base_name eq ""){
    $base_name = $file . ".ssake_m" . $min_overlap . "_o" . $base_overlap . "_r" . $min_base_ratio . "_t" . $max_trim . "_w" . $min_depth_of_coverage . "_q" . $tie_breaker . "_y" . $ignore_read;
 
    if($paired){
-      $base_name .= "_e" . $insert_stdev . "_k" . $min_links . "_a" . $max_link_ratio . "_z" . $contig_size_cutoff . "_x" . $min_tig_overlap  . "_g-" . $display_unpaired_file;
+      $base_name .= "_e" . $insert_stdev . "_l" . $min_links . "_a" . $max_link_ratio . "_z" . $contig_size_cutoff  . "_g-" . $display_unpaired_file;
    }
    if($opt_s){
-      $base_name .= "_s-" . $display_seed_file . "_i-" . $independent . "_j-" . $targetwordlen . "_u-" . $space_restriction;
+      $base_name .= "_s-" . $display_seed_file . "_i" . $independent . "_j-" . $targetwordlen . "_u-" . $space_restriction;
    }
 
    my $pid_num = getpgrp(0);
    $base_name .= "_pid" . $pid_num;
 }
 
-my $contig = $base_name .  ".contigs";
-my $singlet = $base_name . ".singlets";
-my $short = $base_name . ".short";
+my $contig = $base_name .  "_contigs.fa";
+my $singlet = $base_name . "_singlets.fa";
+my $short = $base_name . "_short.txt";
 my $log = $base_name . ".log";
 my $scaffold = $base_name . ".scaffolds" if ($paired);
-my $mergedtigs = $base_name . ".mergedcontigs" if ($paired);
-my $issues = $base_name . ".pairing_issues" if ($paired);
-my $distribution = $base_name . ".pairing_distribution.csv" if ($paired);
-my $covfile = $base_name . ".coverage.csv" if ($tracked);
-my $rdpositionfile = $base_name . ".readposition" if ($tracked);
+my $scaffold_fasta = $base_name . "_scaffolds.fa" if ($paired);
+my $mergedtigs = $base_name . "_mergedcontigs.fa" if ($paired);#deprecated Jan 2018
+my $issues = $base_name . "_pairing-issues.txt" if ($paired);
+my $distribution = $base_name . "_pairing-distribution.csv" if ($paired);
+my $covfile = $base_name . "_coverage.csv" if ($tracked);
+my $rdpositionfile = $base_name . "_readposition.txt" if ($tracked);
 my $pileupfile = $base_name . ".pileup" if ($space_restriction);
 
 
@@ -210,8 +213,10 @@ if($min_base_ratio <= 0.5 || $min_base_ratio > 1){
 my $init_message = "\nRunning: $0 $version\n-f $file\n-s $seed_file\n\t-i $independent\n\t-j $targetwordlen\n\t-u $space_restriction\n-h $ignorehead\n-w $min_depth_of_coverage\n-m $min_overlap\n-o $base_overlap\n-r $min_base_ratio\n-t $max_trim\n-q $tie_breaker\n-y $ignore_read\n";
 if($tracked){$init_message .= "-c $tracked\nCoverage: $covfile\nRead position: $rdpositionfile\n";$init_message .= "Pileup: $pileupfile\n" if(! $independent && $space_restriction);}
 if($forcetrack){$init_message .= "-z $contig_size_cutoff\n";}
-if($paired){$init_message .= "-p $paired\n-e $insert_stdev\n-k $min_links\n-a $max_link_ratio\n-x $min_tig_overlap\nUnpaired reads (optional) -g $unpaired_file\nScaffolds: $scaffold\nMerged contigs: $mergedtigs\nPairing issues: $issues\nPairing distance distribution: $distribution\n";}
-$init_message .= "\nContigs: $contig\nSinglets: $singlet\n\nExcluded reads: $short\nLog: $log\n";
+if($paired){$init_message .= "-p $paired\n-e $insert_stdev\n-l $min_links\n-a $max_link_ratio\nUnpaired reads (optional) -g $unpaired_file\nScaffold layout: $scaffold\nPairing issues: $issues\nPairing distance distribution: $distribution\n";}
+$init_message .= "\nSinglets: $singlet\nContigs: $contig\n";
+if($paired){$init_message .= "Scaffolds: $scaffold_fasta\n";}
+$init_message .= "\nExcluded reads: $short\nLog: $log\n";
 
 print $init_message;
 print LOG $init_message;
@@ -238,23 +243,26 @@ if(-e $opt_s){
    print LOG $use_seed_message;
    print $use_seed_message if ($verbose);
    ($seed,$seedsplit) = &loadSeed($opt_s,$targetwordlen); 
+
+
+
 }
 
 my($set,$bin,$matepair);
 ($set,$bin,$matepair) = &readFasta($matepair,$set,$bin,$file,$short,$paired,$encoded,$seedsplit,$space_restriction,$targetwordlen,$ignorehead);
 ($set,$bin,$matepair) = &readFasta($matepair,$set,$bin,$unpaired_file,$short,0,$encoded,$seedsplit,$space_restriction,$targetwordlen,$ignorehead) if (-e $opt_g);
 
-if(! $opt_s){### not file provided as seed sequences
-   $seed = $set;     ### the sequencing read set
-   $TRACK_COUNT = 0; 
-}else{### file provided as seed
-   if($independent){### de novo targeted assembly
+if(! $opt_s){
+   $seed = $set;
+   $TRACK_COUNT = 0;
+}else{
+   if($independent){
       my $ind_message = "-i has been set to 1, which means the target sequences are USED for recruiting reads for de novo assembly, NOT target-based reference guided assemblies\n";
       printf $ind_message;
       print LOG $ind_message;
       $seed = {};
-      $seed = $set;  ### the sequencing read set
-   }else{### seed-guided assembly extension
+      $seed = $set;
+   }else{
       my $ind_message = "-i has been set to 0, which means the target sequences are USED for recruiting reads for target-based reference guided assemblies (only de novo extension on the ends\n";
       printf $ind_message;
       print LOG $ind_message;
@@ -303,8 +311,9 @@ my $low_total = 0;
 
 #--------------------------------------------
 ASSEMBLY:
-foreach my $seq (sort {$seed->{$b}{'count'}<=>$seed->{$a}{'count'}} keys %$seed){#cycle through the input [normalized] reads
-
+foreach my $seq (keys %$seed){#cycle through the input [normalized] reads
+#foreach my $seq (sort {$seed->{$a}{'count'}<=>$seed->{$b}{'count'}} keys %$seed){#cycle through the input [normalized] reads
+#foreach my $seq (sort {$seed->{$b}{'count'}<=>$seed->{$a}{'count'}} keys %$seed){#cycle through the input [normalized] reads
    my $track;
 
    my ($pu_seed_name,$pu_seed_ori)=("","");
@@ -335,24 +344,25 @@ foreach my $seq (sort {$seed->{$b}{'count'}<=>$seed->{$a}{'count'}} keys %$seed)
       ($bin,$set,$seed) = deleteData($bin,$set,$seed,$seq,$encoded);   #remove k-mer from hash table and prefix tree
      
       print "\n\n>>> START SEED SEQUENCE :: $seq <<<\n\n" if ($verbose);
-
-      ($seq, $set, $bin, $reads_needed, $total_bases, $track) = doExtension("3 prime", $orig_mer, $seq, $set, $bin, $reads_needed, $total_bases, $min_overlap, $base_overlap, $min_base_ratio, $verbose, $track, $forcetrack, $tig_count, $max_trim, $encoded, $matepair,$tie_breaker,$ignore_read);
+      my $barcodeList;
+      ($seq, $set, $bin, $reads_needed, $total_bases, $track, $barcodeList) = doExtension("3 prime", $orig_mer, $seq, $set, $bin, $reads_needed, $total_bases, $min_overlap, $base_overlap, $min_base_ratio, $verbose, $track, $forcetrack, $tig_count, $max_trim, $encoded, $matepair,$tie_breaker,$ignore_read,$barcodeList);
       ####end of 3' extension, beginning of 5' extension  (via 3' RC)
       my $seqrc = reverseComplement($seq);
-      ($seqrc, $set, $bin, $reads_needed, $total_bases, $track) = doExtension("5 prime", $orig_mer, $seqrc, $set, $bin, $reads_needed, $total_bases, $min_overlap, $base_overlap, $min_base_ratio, $verbose, $track, $forcetrack, $tig_count, $max_trim, $encoded, $matepair,$tie_breaker,$ignore_read);
+      ($seqrc, $set, $bin, $reads_needed, $total_bases, $track, $barcodeList) = doExtension("5 prime", $orig_mer, $seqrc, $set, $bin, $reads_needed, $total_bases, $min_overlap, $base_overlap, $min_base_ratio, $verbose, $track, $forcetrack, $tig_count, $max_trim, $encoded, $matepair,$tie_breaker,$ignore_read,$barcodeList);
       ####end of 5' extension
       my $leng = length($seqrc);
       my $reversetig = reverseComplement($seqrc);                   ### return to sequence, as provided 
       my $trimmed_length = length($start_sequence) - 2*($max_trim);
 
       if($leng > $trimmed_length || ($reads_needed > 1 && $opt_s)){ ### second conditional is similar to TASR, output contig if targeted assembly mode and more reads have been recruited.
-	 ### commented out: && $start_sequence ne $seqrc && $start_sequence ne $reversetig
-         $tig_length->{$tig_count} = $leng;
-         my $cov =  $total_bases / $leng;
-         $low_total++ if ($cov < $min_depth_of_coverage);
          last ASSEMBLY if ($low_total >= 50);             ### sudden termination based on expected depth ov coverage
+	 ### commented out: && $start_sequence ne $seqrc && $start_sequence ne $reversetig
 
+         my $cov =  $total_bases / $leng;
          printf TIG ">contig%i|size%i|read%i|cov%.2f$seed_name\n%s\n", ($tig_count,$leng,$reads_needed,$cov,$reversetig);    #print contigs to file
+
+         $tig_length->{$tig_count} = $leng;
+         $low_total++ if ($cov < $min_depth_of_coverage);
 
          if($forcetrack && $leng >= $contig_size_cutoff){
 
@@ -551,20 +561,40 @@ if($paired){
    print LOG $sc_end_message;
    $assemblyruninfo.= $sc_end_message . "\n";
 
-   my $me_start_message = "\n=>Merging contigs initiated $date\n";
-   print $me_start_message;
-   print LOG $me_start_message;
-   $assemblyruninfo.= $me_start_message . "\n";
-
-
-   &forcefillGaps($scaffold, $contig, $mergedtigs, $verbose, $min_tig_overlap, $max_count_trim, $npad_gaps, $alternate, $matepair, $min_overlap, $base_overlap, $min_base_ratio, $forcetrack, $max_trim, $encoded,$seedsplit,$space_restriction,$targetwordlen,$insert_stdev);
-
    $date = `date`;
    chomp($date);
-   my $me_end_message = "\nMerging contigs ended $date\n";
-   print $me_end_message;
-   print LOG $me_end_message;
-   $assemblyruninfo.=  $me_end_message . "\n";
+
+   my $sc_fasta_message = "\n\n=>Making scaffold FASTA file: $date\n";
+   print $sc_fasta_message;
+   print LOG $sc_fasta_message;
+   $assemblyruninfo.= $sc_fasta_message . "\n";
+
+   ### reading contigs to make fasta file and get additional needed info
+   my ($tighash, $tignames, $tig_length) = &readContigsMemory($contig);
+   ### building scaffold fasta 
+   &buildScaffoldFasta($scaffold,$tighash,$scaffold_fasta);
+
+   my $sc_fasta_done_message = "Scaffolds FASTA in: $scaffold_fasta\n";
+   print $sc_fasta_done_message;
+   print LOG $sc_fasta_done_message;
+   $assemblyruninfo.= $sc_fasta_done_message . "\n";
+
+   ### DEPRECATED FEATURE JAN2018 (force-fill gap)
+   #$date = `date`;
+   #chomp($date);
+   #my $me_start_message = "\n=>Merging contigs initiated $date\n";
+   #print $me_start_message;
+   #print LOG $me_start_message;
+   #$assemblyruninfo.= $me_start_message . "\n";
+
+   #&forcefillGaps($scaffold, $contig, $mergedtigs, $verbose, $min_tig_overlap, $max_count_trim, $npad_gaps, $alternate, $matepair, $min_overlap, $base_overlap, $min_base_ratio, $forcetrack, $max_trim, $encoded,$seedsplit,$space_restriction,$targetwordlen,$insert_stdev);
+
+   #$date = `date`;
+   #chomp($date);
+   #my $me_end_message = "\nMerging contigs ended $date\n";
+   #print $me_end_message;
+   #print LOG $me_end_message;
+   #$assemblyruninfo.=  $me_end_message . "\n";
 
 }
 
@@ -1010,7 +1040,7 @@ sub pairContigs{
 # SSAKE contig extension
 sub doExtension{
 
-   my ($direction, $orig_mer, $seq, $set, $bin, $reads_needed, $total_bases, $min_overlap, $base_overlap, $min_base_ratio, $verbose, $track, $paired, $tig_count, $max_trim, $e, $matepair, $tie_breaker, $ignore_read) = @_;
+   my ($direction, $orig_mer, $seq, $set, $bin, $reads_needed, $total_bases, $min_overlap, $base_overlap, $min_base_ratio, $verbose, $track, $paired, $tig_count, $max_trim, $e, $matepair, $tie_breaker, $ignore_read, $barcodeList) = @_;
 
    my $extended = 1;
    my $trim_ct = 0;     #trim counter - keeps track of 3'-end trim
@@ -1023,7 +1053,43 @@ sub doExtension{
          my $growing_tig_length = length($seq);
          my ($pos,$span) = (0,"");
 
+         ### Added 15January18 =====================================
+         if($growing_tig_length >= $MAX){   # $seq is length of contig being extended -- if larger than largest read, make sure the largest read could align and all subsequent rds.
+            $span = $MAX - $TRACK_COUNT;
+         }else{
+            $span = $growing_tig_length - $TRACK_COUNT;
+         }
+
+         ### NEW ADD JAN 2018
+         while ($span >= $min_overlap){  # will slide the subseq, until the user-defined min overlap size
+            $pos = $growing_tig_length - $span;
+            print "MAX:$MAX, SPAN:$span, POS:$pos" if ($verbose);
+
+            my $subseq = substr($seq, $pos, $span);              #make a sub-sequence of length l-(1..i) for searching
+            my @s = $subseq =~ /\S{4}/g;
+            my $subset = $bin->{$e->{$s[0]}}{$e->{$s[1]}}{$e->{$s[2]}}{$e->{$s[3]}}; #Will grab everything even the reverse complement ones
+
+            print "####$direction SEARCH Position:$pos Span:$span - Subseq:$subseq Previous:$seq\n" if ($verbose);
+
+            ### SEARCH -- this cycles through limited k-mer space
+            foreach my $pass (sort {$subset->{$b} <=> $subset->{$a}} keys %$subset){
+               if($pass =~ /^$subseq([ACGT]+)/ || $subseq =~ /$pass/){#### OVERHANG || EMBEDDED
+                  #print "BC $subset->{$pass}\n";
+                  if(defined $barcodeList->{$subset->{$pass}}){### barcode seen before
+                     if((length($seq) - $barcodeList->{$subset->{$pass}}{'lastlength'}) > 60000){
+                        $barcodeList->{$subset->{$pass}}{'count'}=0; ### reset barcode to zero, too far apart, new molecule
+                     }                     
+                  }
+                  $barcodeList->{$subset->{$pass}}{'lastlength'}=length($seq);### new tracks all barcodes encountered
+                  $barcodeList->{$subset->{$pass}}{'count'}++;### new tracks all barcodes encountered
+               }
+            } 
+            $span--;
+         }#while overlap >= user-defined -m minimum
+
+         ### END NEW ADDITION==========================================
          ### Added 19March08
+         ($pos,$span) = (0,"");
          if($growing_tig_length >= $MAX){   # $seq is length of contig being extended -- if larger than largest read, make sure the largest read could align and all subsequent rds.
             $span = $MAX - $TRACK_COUNT;
          }else{
@@ -1052,7 +1118,6 @@ sub doExtension{
 
             ### SEARCH -- this cycles through limited k-mer space
             foreach my $pass (sort {$subset->{$b} <=> $subset->{$a}} keys %$subset){
-
                if($pass =~ /^$subseq([ACGT]+)/){#### OVERHANG 
                   #can we align perfectly that subseq to another rd start?
                   my $dangle = $1;
@@ -1074,8 +1139,7 @@ sub doExtension{
                   ###############################################
                   # CONSIDER CERTAIN READS FOR OVERLAP, PREFERABLY THOSE WITH LOGICAL MATES AND FWD READS IN TIG LARGE ENOUGH TO HAVE SUCH PAIRS
                   foreach my $newpass(keys %$psr){
-                     if($paired && defined $matepair->{$newpass} && ($psr->{$newpass}{'end'} < $psr->{$newpass}{'start'}) && ($psr->{$newpass}{'start'} >= $set->{$newpass}{'grace'})){#paired, pairingRds, <---, outside grace
-
+                     if((length($seq)<=2000 || ((length($seq)>2000 || length($seq)<=10000) && $barcodeList->{$subset->{$newpass}}{'count'}>4) || (length($seq)>10000 && $barcodeList->{$subset->{$newpass}}{'count'}>=9 ) )  && $paired && defined $matepair->{$newpass} && ($psr->{$newpass}{'end'} < $psr->{$newpass}{'start'}) && ($psr->{$newpass}{'start'} >= $set->{$newpass}{'grace'})){#paired, pairingRds, <---, outside grace
                         #print "$B_end <-- $B_start *** [upper limit is grace]***\n";
                         #     <--B
                         #========
@@ -1100,7 +1164,7 @@ sub doExtension{
                               }
                            }
                         }
-                     }else{### not paired or paired (B-->): collect all overlaps
+                     }elsif(length($seq)<=2000 || ((length($seq)>2000 || length($seq)<=10000) && $barcodeList->{$subset->{$newpass}}{'count'}>4) || (length($seq)>10000 && $barcodeList->{$subset->{$newpass}}{'count'}>=9 ) ){### not paired or paired (B-->): collect all overlaps
                         $overhang = collectOverhang($overhang,$newpass,$dangle,$set,$verbose);
                         $overlapping_reads->{$pass}++;
                         $long=1 if(length($newpass) > $illuminaLengthCutoff);
@@ -1108,7 +1172,6 @@ sub doExtension{
                   }###for $newpass
                   #----------------------------------
                }elsif($subseq =~ /$pass/){     #### EMBEDDED
-
                   my $complement_pass = reverseComplement($pass);
 
                   print "$pass found in $subseq ($set->{$pass}{'count'}) - deleting read: $pass and complement ($set->{$complement_pass}): $complement_pass\n\n" if ($verbose);
@@ -1133,7 +1196,7 @@ sub doExtension{
                      my $current_bases = length($complement_pass) * $current_reads;
                      $reads_needed += $current_reads;
                      $total_bases += $current_bases;
-                     if($paired){ 
+                     if($paired){
                         $track->{$complement_pass}{'end'} = $pos + 1;
                         $track->{$complement_pass}{'start'} = $pos + length($complement_pass);
                         $track->{$complement_pass}{'cov'} = $current_reads;
@@ -1316,7 +1379,7 @@ sub doExtension{
    
    print "\n*** NOTHING ELSE TO BE DONE IN $direction - PERHAPS YOU COULD DECREASE THE MINIMUM OVERLAP -m (currently set to -m $min_overlap) ***\n\n" if ($verbose);
 
-   return $seq, $set, $bin, $reads_needed, $total_bases, $track;
+   return $seq, $set, $bin, $reads_needed, $total_bases, $track, $barcodeList;
 }
 
 
@@ -1522,8 +1585,12 @@ sub loadSequence{
          $set->{$orig}{'count'}++;
          $set->{$orig}{'names'}{$head}="";
          $set->{$orig}{'grace'} = $up_iz;
-         $bin->{$e->{$f[0]}}{$e->{$f[1]}}{$e->{$f[2]}}{$e->{$f[3]}}{$orig}++;
-         $bin->{$e->{$r[0]}}{$e->{$r[1]}}{$e->{$r[2]}}{$e->{$r[3]}}{$rc}++;
+         my $barcode = "";
+         $barcode = $1 if($head =~ /\_(\w+)/); ### Jan 2018 THERE SHOULD ONLY BE ONE _ FOLLOWED BY BARCODE/INDEX/NUMBER
+         $bin->{$e->{$f[0]}}{$e->{$f[1]}}{$e->{$f[2]}}{$e->{$f[3]}}{$orig} = $barcode;### Jan 2018
+         $bin->{$e->{$r[0]}}{$e->{$r[1]}}{$e->{$r[2]}}{$e->{$r[3]}}{$rc} = $barcode;### Jan 2018
+         #was $bin->{$e->{$f[0]}}{$e->{$f[1]}}{$e->{$f[2]}}{$e->{$f[3]}}{$orig}++;
+         #was $bin->{$e->{$r[0]}}{$e->{$r[1]}}{$e->{$r[2]}}{$e->{$r[3]}}{$rc}++;
  
          $recruit_mate++;
          $ctrd++;
@@ -1643,7 +1710,8 @@ sub forcefillGaps{
             $seq = reverseComplement($seq) if($orient eq "f");  ###turn tig around for extension with previous reads
             my $track;
             my ($reads_needed,$total_bases,$tig_count)=(0,0,0);
-            ($seq, $prev_miniset, $prev_minibin, $reads_needed, $total_bases, $track) = doExtension("GAP left", $MAX, $seq, $prev_miniset, $prev_minibin, $reads_needed, $total_bases, $min_overlap, $base_overlap, $min_base_ratio, $verbose, $track, $forcetrack, $tig_count, $max_trim, $encoded, $matepair,$tie_breaker,$ignore_read) if($ct);###no need to extend first ($ct=0) contig on the left
+            my $barcodeList;
+            ($seq, $prev_miniset, $prev_minibin, $reads_needed, $total_bases, $track, $barcodeList) = doExtension("GAP left", $MAX, $seq, $prev_miniset, $prev_minibin, $reads_needed, $total_bases, $min_overlap, $base_overlap, $min_base_ratio, $verbose, $track, $forcetrack, $tig_count, $max_trim, $encoded, $matepair,$tie_breaker,$ignore_read,$barcodeList) if($ct);###no need to extend first ($ct=0) contig on the left
             ($prev_miniset, $prev_minibin)=({},{});
             $seq = reverseComplement($seq);  ###re-change orientation for right extension (both fwd/rev tigs)
 
@@ -1758,7 +1826,7 @@ sub forcefillGaps{
                   my $up_iz = $collect_candidates->{$mateseq} - $min_allowed;
                   ($miniset,$minibin,$ctrd,$recruit_mate) = &loadSequence($miniset,$minibin,$ctrd,$mateseq,$encoded,$head,$up_iz,$seedsplit,$space_restriction,$targetwordlen,$recruit_mate) if(length($mateseq) <= $illuminaLengthCutoff);
                }
-               ($seq, $miniset, $minibin, $reads_needed, $total_bases, $track) = doExtension("GAP right", $MAX, $seq, $miniset, $minibin, $reads_needed, $total_bases, $min_overlap, $base_overlap, $min_base_ratio, $verbose, $track, $forcetrack, $tig_count, $max_trim, $encoded, $matepair,$tie_breaker,$ignore_read);### extend first contig on the right
+               ($seq, $miniset, $minibin, $reads_needed, $total_bases, $track, $barcodeList) = doExtension("GAP right", $MAX, $seq, $miniset, $minibin, $reads_needed, $total_bases, $min_overlap, $base_overlap, $min_base_ratio, $verbose, $track, $forcetrack, $tig_count, $max_trim, $encoded, $matepair,$tie_breaker,$ignore_read,$barcodeList);### extend first contig on the right
                $prev_miniset = $miniset;###used reads have been deleted
                $prev_minibin = $minibin;
                ($miniset,$minibin)=({},{});### flush custom prefix tree minibin and miniset
@@ -1848,6 +1916,123 @@ sub forcefillGaps{
    }
    close IN;
    close OUT;
+}
+
+#-------------------
+sub readContigsMemory{
+   my $file = shift;
+
+   my $tig_length;
+   my $tignames;
+   my $fh;
+   my $prevhead="";
+   my $seq="";
+   my $cttig=0;
+
+   ###Support for compressed files MAR2016
+   if($file=~/zip$/i){
+      open(IN,"unzip -p $file|") || die "Error reading $file -- fatal\n";
+   }elsif($file=~/gz$/i || $file=~/gzip$/i){
+      open(IN,"gunzip -c $file|") || die "Error reading $file -- fatal\n";
+   }else{
+      open(IN,$file) || die "Error reading $file -- fatal\n";
+   }
+
+   while(<IN>){
+      chomp;
+      if(/^\>(.*)/){
+         my $head=$1;
+
+         if ($head ne $prevhead && $seq ne '' && $prevhead ne ''){
+            $cttig++;
+            $tignames->{$cttig} = $prevhead;
+            $fh->{$cttig} = $seq;
+            $tig_length->{$cttig} = length($seq);
+         }
+         $seq = '';
+         $prevhead = $head;
+      }else{
+         $seq .= uc($_);
+      }
+   }
+   $cttig++;
+   $tignames->{$cttig} = $prevhead;
+   $fh->{$cttig} = $seq;
+   $tig_length->{$cttig} = length($seq);
+
+   return $fh,$tignames,$tig_length;
+}
+
+
+#-------------------
+sub buildScaffoldFasta{
+
+   my ($dotscaffold,$fh,$scaffold_fasta) = @_;
+
+   open(IN,$dotscaffold) || die "Cannot open $dotscaffold for reading -- fatal.\n";
+
+   open(OUT,">$scaffold_fasta") || die "can't write to $scaffold_fasta -- fatal\n";
+
+   my $tot=0;
+   my $ct=0;
+   my $sct=0;
+   while(<IN>){### each line
+      chomp;   
+      my $sc="";
+      my @a = split(/\,/);
+      my @tig;
+   
+      if($a[2]=~/\_/){
+         @tig = split(/\_/,$a[2]);
+      }else{
+         push @tig, $a[2];
+      }
+
+      $sct++;
+      my $tigsum=0;
+      print OUT ">$_\n";
+      foreach my $t (@tig){
+         $ct++;
+    
+         if($t=~/([fr])(\d+)z(\d+)(\S+)?/i){
+
+            my $orient = $1;
+            my $tnum=$2;
+            my $head = $orient . $tnum;
+            my $search = $tnum;
+            my $other = $4;
+            $tot+= $3;
+            $tigsum +=$3;
+
+            my $gap = "NA"; 
+            my $numlinks = "NA";
+            my $linksratio = "NA";
+
+            my $gapseq = "";
+
+            $numlinks = $1 if($other=~/k(\d+)/);
+            $linksratio = $1 if($other=~/a(\d+.*)m/);
+	    $gap = $1 if($other=~/m(\-?\d+)/);
+
+            my $seq = $fh->{$search};
+            $seq = reverseComplement($seq) if($orient eq "r");
+
+            $gapseq = "N" x $gap if($gap > 0);
+            $gapseq = "n" if($gap ne "NA" && $gap <= 0 );
+            $seq .= $gapseq;
+
+            print OUT "$seq";         
+                
+         }#tig regex
+   
+      }#each tig
+      print OUT "\n";
+   }
+
+   close CORROUT;
+   close IN;
+   close OUT;
+
 }
 
 ## We hope this code is useful to you -- Please send comments & suggestions to rwarren at bcgsc.ca

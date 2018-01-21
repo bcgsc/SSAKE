@@ -33,19 +33,14 @@ echo ---------------------------------------------------------------------------
 /usr/bin/time -v -o $4.time ../SSAKE -f paired.fa -p 1 -g unpaired.fa -m 20 -w 5 -b $4
 d=`date`
 echo -----------------------------------------------------------------------------------
-echo $d : Converting scaffold .csv into fasta file...
-echo -----------------------------------------------------------------------------------
-../tools/makeFastaFileFromScaffolds.pl $4.scaffolds
-d=`date`
-echo -----------------------------------------------------------------------------------
 echo $d : Computing stats 
 echo -----------------------------------------------------------------------------------
-../tools/getStats.pl $4.contigs > $4.contigs.stats
+../tools/getStats.pl $4_contigs.fa > $4_contigs_stats.txt
 d=`date`
 echo -----------------------------------------------------------------------------------
-echo $d : Computing stats from $4.scaffolds.fa
+echo $d : Computing stats from $4_scaffolds.fa
 echo -----------------------------------------------------------------------------------
-../tools/getStats.pl $4.scaffolds.fa > $4.scaffolds.stats
+../tools/getStats.pl $4_scaffolds.fa > $4_scaffolds.stats.txt
 d=`date`
 echo -----------------------------------------------------------------------------------
 echo $d : assembly pipeline complete. Results are under $4.

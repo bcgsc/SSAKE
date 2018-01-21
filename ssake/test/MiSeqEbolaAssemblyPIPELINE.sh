@@ -23,15 +23,10 @@ echo done. Initiating SSAKE assembly ETA 10-20min depending on system...
 echo -----------------------------------------------------------------------------------
 time ../SSAKE -f paired.fa -p 1 -g unpaired.fa -m 20 -w 5 -b ebola
 echo -----------------------------------------------------------------------------------
-echo done. Converting scaffold .csv into fasta file...
+echo done. Computing stats from ebola_contigs.fa 
 echo -----------------------------------------------------------------------------------
-../tools/makeFastaFileFromScaffolds.pl ebola.scaffolds
+../tools/getStats.pl ebola_contigs.fa 500 > ebola_contigs_stats.txt
+echo done. Computing stats from ebola_scaffolds.fa
 echo -----------------------------------------------------------------------------------
-echo done. Computing stats from ebola.contigs 
-echo -----------------------------------------------------------------------------------
-../tools/getStats.pl ebola.contigs 500 > ebola.contigs.stats
-echo -----------------------------------------------------------------------------------
-echo done. Computing stats from ebola.scaffolds.fa
-echo -----------------------------------------------------------------------------------
-../tools/getStats.pl ebola.scaffolds.fa 500 > ebola.scaffolds.stats
+../tools/getStats.pl ebola_scaffolds.fa 500 > ebola_scaffolds_stats.txt
 echo assembly pipeline complete. Results are under ebola.

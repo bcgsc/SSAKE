@@ -42,8 +42,8 @@ def main():
                           help="Base intensity threshold value (Phred quality scores, default=10)",)
         parser.add_option("-c", "--consec", dest="consec", type="int", default=20,
                           help="Minimum number of consecutive bases passing threshold values (default=20)",)
-        parser.add_option("-e", "--ASCII encoding type: 33 or 64", dest="encoding", type="int", default=64,
-                          help="Type of ASCII encoding: 33 (standard) or 64 (illumina)  (default=64)",)
+        parser.add_option("-e", "--ASCII encoding type: 33 or 64", dest="encoding", type="int", default=33,
+                          help="Type of ASCII encoding: 33 (standard) or 64 (illumina)  (default=33)",)
 	parser.add_option("-v", "--verbose", dest="verbose", action="store_true",
 	                  help="Runs in Verbose mode.",)
 	(opts, args) = parser.parse_args()
@@ -146,6 +146,8 @@ def readNtrim(fastq, threshold, consecutive, encoding, verbose, FASTA, LOG):
 				"""
 	
 			seq_len = len(seq)
+			if consecutive>seq_len:
+				continue
 	  		head_match_regex = re.compile("\-{%i,%i}" % (consecutive, seq_len)) 
 			head_match = head_match_regex.search(concat)
 	 		if head_match != None:

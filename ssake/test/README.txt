@@ -1,11 +1,11 @@
-January 2016
+January 2018
 ------------
 TEST DATA / SSAKE ASSEMBLIES
 
 
 A) Testing the distribution with very short reads:
 
-../SSAKE -f Herpesvirus_3.60kb.reads.fa -m 16 -o 2 -w 5 -c 1 
+../SSAKE -f Herpesvirus_3.60kb.reads.fa -m 16 -o 2 -w 5 -c 1 -b HStestInstall 
 
 
 B) Testing the targeted assembly using a seed/target sequence:
@@ -51,7 +51,7 @@ coliMiSeq300m80.scaffolds.stats1
 
 ./HiSeqFusobacteriumAssembly.sh
 
-(just the assembly)
+(read download, assembly)
 
 
 5) De Novo Targeted assembly of a TMPRSS2:ERG fusion using a prostate adenocarcinoma RNA-seq dataset
@@ -59,3 +59,10 @@ coliMiSeq300m80.scaffolds.stats1
 ./runSSAKEtargeted.sh
 
 (read download,trimming,formatting,assembly)
+
+
+6) C. elegans linked-read assembly
+
+./CelegansLinkedReadsAssembly.sh
+
+(read download, assembly)

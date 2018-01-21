@@ -1,20 +1,21 @@
 d=`date`
 echo ----------------------------------------------------------------------------------- 
-echo Running SSAKE assembly pipeline on bacterial sequence data. It will need ca.4GB RAM
+echo Running SSAKE assembly pipeline on bacterial sequence data. It will need ca.80GB RAM
 echo ------------------------------------------------------------------------------------ 
-echo Downloading trimmed/formatted data for Fusobacterium nucleatum CC53 on $d ...
+echo Downloading trimmed/formatted data on $d ...
 echo ------------------------------------------------------------------------------------
-rm -rf CC53_2million.fa
-wget ftp://ftp.bcgsc.ca/supplementary/SSAKE/CC53_2million.fa
+rm -rf celegans_paired.fa
+wget ftp://ftp.bcgsc.ca/supplementary/SSAKE/celegans_paired.fa.gz
+gunzip celegans_paired.fa.gz
 echo ------------------------------------------------------------------------------------
-echo done. Initiating SSAKE assembly ETA 10-20min depending on system...
+echo done. Initiating SSAKE assembly ETA 4h depending on system...
 echo ------------------------------------------------------------------------------------
-time ../SSAKE -f CC53_2million.fa -p 1 -m 20 -w 5 -b fusoCC53
+time ../SSAKE -f celegans_paired.fa -p 1 -m 20 -w 5 -b celegansLR
 echo ------------------------------------------------------------------------------------
 echo done. Computing stats from contigs
 echo ------------------------------------------------------------------------------------
-../tools/getStats.pl fusoCC53_contigs.fa 500 > fusoCC53_contigs_stats.txt
+../tools/getStats.pl celegansLR_contigs.fa 500 > celegansLR_contigs_stats.txt
 echo done. Computing stats from scaffolds 
 echo ------------------------------------------------------------------------------------
-../tools/getStats.pl fusoCC53_scaffolds.fa 500 > fusoCC53_scaffolds_stats.txt
-echo assembly pipeline complete. Results are under fusoCC53.
+../tools/getStats.pl celegansLR_scaffolds.fa 500 > celegansLR_scaffolds_stats.txt
+echo assembly pipeline complete. Results are under celegansLR.

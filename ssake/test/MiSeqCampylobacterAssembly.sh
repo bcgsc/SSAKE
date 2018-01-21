@@ -12,15 +12,11 @@ echo done. Initiating SSAKE assembly ETA 10-20min depending on system...
 echo ------------------------------------------------------------------------------------
 time ../SSAKE -f CC57C_paired.fa -p 1 -g CC57C_unpaired.fa -m 20 -w 5 -b CC57C
 echo ------------------------------------------------------------------------------------
-echo done. Converting scaffold .csv into fasta file...
+echo done. Computing stats from contigs 
 echo ------------------------------------------------------------------------------------
-../tools/makeFastaFileFromScaffolds.pl CC57C.scaffolds
+../tools/getStats.pl CC57C_contigs.fa 500 > CC57C_contigs_stats.txt
 echo ------------------------------------------------------------------------------------
-echo done. Computing stats from CC57C.contigs 
+echo done. Computing stats from scaffolds
 echo ------------------------------------------------------------------------------------
-../tools/getStats.pl CC57C.contigs 500 > CC57C.contigs.stats
-echo ------------------------------------------------------------------------------------
-echo done. Computing stats from CC57C.scaffolds.fa
-echo ------------------------------------------------------------------------------------
-../tools/getStats.pl CC57C.scaffolds.fa 500 > CC57C.scaffolds.stats
+../tools/getStats.pl CC57C_scaffolds.fa 500 > CC57C_scaffolds_stats.txt
 echo assembly pipeline complete. Results are under CC57C.

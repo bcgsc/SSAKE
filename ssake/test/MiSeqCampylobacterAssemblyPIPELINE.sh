@@ -22,15 +22,10 @@ echo done. Initiating SSAKE assembly ETA 10-20min depending on system...
 echo -----------------------------------------------------------------------------------
 time ../SSAKE -f paired.fa -p 1 -g unpaired.fa -m 20 -w 5 -b Cshowae
 echo -----------------------------------------------------------------------------------
-echo done. Converting scaffold .csv into fasta file...
+echo done. Computing stats from contigs 
 echo -----------------------------------------------------------------------------------
-../tools/makeFastaFileFromScaffolds.pl Cshowae.scaffolds
+../tools/getStats.pl Cshowae_contigs.fa 500 > Cshowae_contigs_stats.fa
+echo done. Computing stats from scaffolds
 echo -----------------------------------------------------------------------------------
-echo done. Computing stats from Cshowae.contigs 
-echo -----------------------------------------------------------------------------------
-../tools/getStats.pl Cshowae.contigs 500 > Cshowae.contigs.stats
-echo -----------------------------------------------------------------------------------
-echo done. Computing stats from Cshowae.scaffolds.fa
-echo -----------------------------------------------------------------------------------
-../tools/getStats.pl Cshowae.scaffolds.fa 500 > Cshowae.scaffolds.stats
+../tools/getStats.pl Cshowae_scaffolds.fa 500 > Cshowae_scaffolds_stats.txt
 echo assembly pipeline complete. Results are under Cshowae.
