@@ -21,17 +21,23 @@ It is an easy-to-use, robust, reliable and tractable assembly algorithm for shor
 Best assembly results are achieved with quality-trimmed reads.  When dealing with Solexa/Illumina sequences, remove low quality bases, whenever possible, with:
 
 <pre>
-TQS.py -f _seq.txt -q _prb.txt -t 5 -d 5 -l #CYCLES -c 20  OR OTHER SETTINGS 
-TQSfastq.py -f myfile.fq -t 20 -c 30 -e 64
-</pre>
-
-example:
-<pre>
-~/ssake_v4.0/tools/TQSfastq.py -f ../myIlluminaSeqLane_1.fq -c 30 -t 20  ##mate no.1
-~/ssake_v4.0/tools/TQSfastq.py -f ../myIlluminaSeqLane_2.fq -c 30 -t 20  ##mate no.2
-~/ssake_v4.0/tools/makePairedOutput2UNEQUALfiles.pl ../myIlluminaSeqLane_1.fq_T20C20E64.trim.fa ../myIlluminaSeqLane_2.fq_T20C20E64.trim.fa
+~/ssake_v4.0/tools/
+TQS.py 
+eg. TQS.py -f _seq.txt -q _prb.txt -t 5 -d 5 -l #CYCLES -c 20  OR OTHER SETTINGS 
+TQSfastq.py
+eg. TQSfastq.py -f myfile.fq -t 20 -c 30 -e 64
+TQSfastq.pl
+eg. TQSfastq.pl -f human.fof -q 20 -n 70 -e 33
+where human.fof contains fastq files to trim
+make sure the trimmed fastq ends with 1 and 2 for the first and second reads of a pair
+eg. makePairedOutput2UNEQUALfiles.pl NA24143_genome_phased_namesorted.bam1_1.fqc70q20e33.fa NA24143_genome_phased_namesorted.bam1_2.fqc70q20e33.fa 350
 will produced "paired.fa" and "unpaired.fa"
-~/ssake_v4.0/SSAKE -f paired.fa -g unpaired.fa -p 1 -m 17 -o 4 -c 1 -w 5
+~/ssake_v4.0/SSAKE -f paired.fa -g unpaired.fa -p 1 -m 20 -o 3 -c 1 -w 5
+
+A BASIC PIPELINE TO HELP YOU PREPARE YOUR INPUT PAIRED READS EXISTS (./tools/runSSAKE.sh)
+
+USAGE: ./runSSAKE.sh read1.fq read2.fq libraryFragmentLength basename
+
 </pre>
 
 The scripts are located in ./tools subdirectory included with this release.
