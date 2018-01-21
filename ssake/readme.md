@@ -41,50 +41,50 @@ For trimming paired-end sequences (using _seq.txt and _prb.txt from Illumina), p
 
 ### What's new in v4.0 ?
 ----------------------
-
-Initial support for linked reads, such as those produced by the 10x Genomics Chromium technology
-Linked reads are supplied in the original SSAKE format, but the barcode information is indicated by sequence following a single underscore "_"
-Added a C. elegans linked read data assembly script in the test folder
-Scaffolding options consistent with that of the LINKS scaffolder
-SSAKE no longer sorts by/prioritizes high multiplicity reads for assembly
-Streamlined file names
-Deprecated force-fill gap feature
-Bug fixes
-
+<pre>
+-Initial support for linked reads, such as those produced by the 10x Genomics Chromium technology
+-Linked reads are supplied in the original SSAKE format, but the barcode information is indicated by sequence following a single underscore "_"
+-Added a C. elegans linked read data assembly script in the test folder
+-Scaffolding options consistent with that of the LINKS scaffolder
+-SSAKE no longer sorts by/prioritizes high multiplicity reads for assembly
+-Streamlined file names
+-Deprecated force-fill gap feature
+-Bug fixes
+</pre>
 
 ### What's new in v3.8.5 ?
 ----------------------
-
+<pre>
 Implements targeted de novo assembly. Fixed a bug that manifested when running SSAKE in targeted (-s) de novo assembly mode. Contig sequences as long as the seed sequence were previously misclassified as singlets.
-
+</pre>
 
 ### What's new in v3.8.4 ?
 ----------------------
-
+<pre>
 Improvements to the targeted assembly functionality, recruiting whole read pairs for de novo assembly when at least one read has a k-mer match. This has the potential to extend the reconstructed contigs by 2X the library fragment size (upstream and downstream) of the target sequence when run in targeted de novo assembly mode -s and -i 1 (default).
-
+</pre>
 
 ### What's new in v3.8.3 ?
 ----------------------
-
+<pre>
 Included tie-breaker option (-q) when determining consensus from equal-coverage bases. When set (-q 1), the parameter r is overridden. Note that even though the base is "randomly" chosen in such situations, SSAKE will only extend contigs in cases where there is read support over the chosen base. Included option to ignore reads making up the consensus base extension (-y).
-
+</pre>
 
 ### What's new in v3.8.2 ?
 ----------------------
-
+<pre>
 Included target word length (-j option) - TASR behaviour (equivalent to -k option in TASR)
-
+</pre>
 
 ### What's new in v3.8.1 ?
 ----------------------
-
+<pre>
 fixed SSAKE for Perl >= 5.16.0, where deprecated getopts.pl has been removed. Thanks to Nicola Soranzo for sending the fix.
-
+</pre>
 
 ### What's new in v3.8+ ?
 ---------------------
-
+<pre>
 This release is 30% faster than v3.7, made possible by 4-base encoding of the first 16 bases of each read while populating a 4-nodes (16/4) prefix tree.  Also, the newly implemented (and required) -w option, gives users more control over the assembly, focusing on higher-depth contigs and ignoring short, low-depth contigs comprised of NGS reads having errors, contaminating reads or any other (perhaps unwanted) sequences. 
 
 *The assembly of 25M high-quality (100bp x 2 x Q30) bacterial NGS reads (1 lane, Illumina HiSeq) with SSAKE v3.7 in single-end mode took 2h50.  SSAKE v3.8 ran for 2h on the same data.  A SSAKE v3.8 assembly restricted to high-depth contigs (-w 10) ran in 33 minutes, and eliminated thousands of short, low depth of coverage contigs that would otherwise arise from contaminating reads and reads with base errors.    
@@ -95,8 +95,8 @@ Campylobacter showae CC57C colorectal cancer tumor isolate (~2Mbp genome) Illumi
 ftp://ftp.bcgsc.ca/supplementary/SSAKE/CC57C_paired.fa and CC57C_unpaired.fa
  
 SSAKE ASSEMBLY PIPELINE:
+./test/runSSAKE.sh
 
-<pre>
 ./tools/TQSfastq.py -f Assemble_1_R1.fastq -t 30 -c 100 -e 33
 ./tools/TQSfastq.py -f Assemble_1_R2.fastq -t 30 -c 100 -e 33
 cat Assemble_1_R2.fastq_T30C100E33.trim.fa |perl -ne 'if(/^(\>\@\S+)/){print "$1b\n";}else{print;}' >Assemble_1_R2.fastq_T30C100E33.trimFIX.fa
@@ -105,11 +105,9 @@ cat Assemble_1_R1.fastq_T30C100E33.trim.fa |perl -ne 'if(/^(\>\@\S+)/){print "$1
 ./Syrupy-1.4.0/scripts/syrupy.py ./SSAKE -f CC57C_paired.fa -p 1 -g CC57C_unpaired.fa -m 20 -w 5 -b run2014
 ./ssake_v4.0/tools/getStats.pl run2014_contigs.fa
 ./ssake_v4.0/tools/getStats.pl run2014_scaffolds.fa
-</pre>
 
 TRY IT OUT BY SIMPLY RUNNING:
 
-<pre>
 cd test;./MiSeqCampylobacterAssemblyPIPELINE.sh
 cd test;./MiSeqCampylobacterAssembly.sh
 </pre>
@@ -117,68 +115,68 @@ cd test;./MiSeqCampylobacterAssembly.sh
 
 ### What's new in v3.7+ ?
 ---------------------
-
+<pre>
 v3.7+ Improved support for seed-based -s assemblies, notably read-space restriction option -u (TASR behavior, without fastq support)
-
+</pre>
 
 ### What's new in v3.6+ ?
 ---------------------
-
+<pre>
 v3.6+ supports various insert size sequence libraries.  To work with paired data, users must add ":insert_size" (e.g. >SLXA23-1-1-2-13:200 for a 200bp library) at the end of the fasta header (>) for each pairs. v3.6 also has preliminary support for Sanger, paired-end reads.
-
+</pre>
 
 ### What's new in v3.5+ ?
 ---------------------
-
+<pre>
 In v3.5, the read pairing logic is used in the extension process.  More specifically, passed the upper bound insert size, only forward reads AND reverse reads having their assembled mate already assembled in the contig being built will be considered for extension.  This has for effect to mitigate contig misassemblies due to repeats.  It will also extend the end of adjacent contigs in a scaffold in an effort to fill gaps - the resulting contigs are placed in the .mergedcontigs file.
-
+</pre>
 
 ### What's new in v3.4+ ?
 ---------------------
-
+<pre>
 Version 3.4 exploits paired-end reads to explore possible contig merges within scaffolds (Consecutive contigs >= -z bases must overlap by -m bases or more). Version v3.4.1 allows a user to merge all contigs of a scaffold by padding predicted gaps with Ns (-n 1) and predicted but undetected overlaps with a single (n).  Merged contigs are outputted in the _mergedcontigs.fa file.  The default behaviour (-n 0) is to NOT pad the gaps with Ns (v3.4 behaviour).  In the v3.4.1, the _readposition.txt file tracks read names instead of read sequences as the latter can be inferred from the start and end coordinates. THIS IS NOW (v4.0) DEPRECATED.
-
+</pre>
 
 ### What's new in v3.3+ ?
 ---------------------
-
+<pre>
 Fixed a bug in PET routine.  User can now track read position and individual base coverage for reads *fully embedded* within contigs, using the -c option.
-
+</pre>
 
 ### What's new in v3.2.1+ ?
 -----------------------
-
+<pre>
 This release runs ~30% faster and requires ~33% less RAM compared to 15-node prefix tree SSAKE v3.2.0.1 beta.
 Compared to the previous v3.2 release (11-node prefix tree), it will run at ca. double the speed, requiring ~20% more RAM.
-
+</pre>
 
 ### What's new in v3.2+ ?
 ---------------------
-
+<pre>
 The -t option, first introduced in SSAKE 1.3, is back in this release.  The option allows you to trim your contigs in 3', 1 base at a time until a maximum base trim value (-t) is reached.  This option yields longer contigs, but increases assembly run time and, at high t values, might introduce contig misassemblies if your run parameters (i.e. -m, -o & -r) are not stringent enough.  At -m 16 -o 3 -r 0.7, best results were obtained with -t 1.  That's because it removes bases that cause premature breaks during the fragment assembly.  If set, end-trimming kicks in only when all possibilities have been exhausted for a contig extension.
 This release also fixes a major bug that prevented SSAKE from exploring the entire read space for contig extensions seeded by the shorter reads.
-
+</pre>
 
 ### What's new in v3.1+ ?
 ---------------------
-
+<pre>
 SSAKE now allows users to input a fasta file with DNA sequences for use as seeds to nucleate contig extension.
 This feature can be used to extend existing/known DNA sequences using millions of short reads.
 There's a new input format for paired-end reads, which allows reads of variable length to be considered (such as quality-trimmed reads)
-
+</pre>
 
 ### What's new in v3.0+ ?
 ---------------------
-
+<pre>
 SSAKE supports Illumina paired-end read data to build scaffolds. 
-
+</pre>
 
 ### What's new in v2.0+ ?
 ---------------------
-
+<pre>
 SSAKE can now handle error-rich data sets by looking through the overlapping k-mer space for consensus bases overhanging a seed sequence or contig.
 SSAKE now runs on reads of various lengths.  That means quality base trimming of individual sequences can be achieved (using TQS.py/TQSfastq.py supplied in ./tools directory).
-
+</pre>
 
 ### Implementation and requirements
 -------------------------------
@@ -346,6 +344,7 @@ SSAKE v4.0 run tests (all tests provided in the test folder)
 January 2018
 
 Contigs:
+
 n|n:500|L50|min|N80|N50|N20|E-size|max|sum|time (h:mm:ss)|RAM (GB)|name
 ---|---|---|---|---|---|---|---|---|---|---|---|---
 206|109|21|562|18061|32736|64004|40613|107028|2222124|0:06:58|3.5|CC57C_contigs.fa
@@ -357,6 +356,7 @@ n|n:500|L50|min|N80|N50|N20|E-size|max|sum|time (h:mm:ss)|RAM (GB)|name
 7|1|1|60000|60000|60000|60000|60000|60000|60000|0:00:22|0.2|HStestInstall_contigs.fa
 
 Scaffolds:
+
 n|n:500|L50|min|N80|N50|N20|E-size|max|sum|name
 ---|---|---|---|---|---|---|---|---|---|---
 135|42|6|585|47914|128053|233500|159643|382374|2223249|CC57C_scaffolds.fa
@@ -367,6 +367,7 @@ n|n:500|L50|min|N80|N50|N20|E-size|max|sum|name
 638|524|120|501|2756|5067|9273|6141|19764|1943677|fusoCC53_scaffolds.fa
 
 stats generated with abyss-fac
+
 benchmark: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz 128CPU 2TB RAM CentOS7/ 1 thread per assembly
 
 
