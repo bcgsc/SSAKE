@@ -294,7 +294,7 @@ The assembly above uses a single seed sequence located in (Herpesvirus_3.60kb.se
 compare your results with Herpesvirus_3.60kb.reference.fa to see how successful the assembly was
 
 TEST DATA / SSAKE ASSEMBLIES
-
+<pre>
 A) Testing the distribution with very short reads:
 ../SSAKE -f Herpesvirus_3.60kb.reads.fa -m 16 -o 2 -w 5 -c 1 
 
@@ -342,11 +342,16 @@ coliMiSeq300m80.scaffolds.stats1
 ./runSSAKEtargeted.sh
 (read download,trimming,formatting,assembly)
 
-6) C. elegans linked-read assembly
+
+D) Testing SSAKE on LRsim linked-read data
+
+1) C. elegans linked-read assembly
 ./CelegansLinkedReadsAssembly.sh
 (read download, assembly)
+</pre>
 
-SSAKE v4.0 run tests (all tests provided in the test folder)
+
+SSAKE v4.0 RUN TESTS (all tests provided in the test folder)
 January 2018
 
 Contigs:
