@@ -19,7 +19,7 @@ echo done. Formatting fasta input for SSAKE...
 echo -----------------------------------------------------------------------------------
 ../tools/makePairedOutput2UNEQUALfiles.pl SRR2019530_1.fastqc70q20e33.trimFIX.fa SRR2019530_2.fastqc70q20e33.trimFIX.fa 600
 echo -----------------------------------------------------------------------------------
-echo done. Initiating SSAKE assembly ETA 10-20min depending on system...
+echo done. Initiating SSAKE assembly.. 
 echo -----------------------------------------------------------------------------------
 time ../SSAKE -f paired.fa -p 1 -g unpaired.fa -m 20 -w 5 -b ebola
 echo -----------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 d=`date`
 echo ----------------------------------------------------------------------------------- 
-echo Running SSAKE assembly pipeline on bacterial sequence data. It will need ca.4GB RAM
+echo Running SSAKE assembly pipeline on bacterial sequence data.
 echo ------------------------------------------------------------------------------------ 
 echo Downloading trimmed/formatted data for Campylobacter showae CC57C on $d ...
 echo ------------------------------------------------------------------------------------

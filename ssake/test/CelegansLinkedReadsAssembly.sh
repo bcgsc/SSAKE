@@ -1,6 +1,6 @@
 d=`date`
 echo ----------------------------------------------------------------------------------- 
-echo Running SSAKE assembly pipeline on bacterial sequence data. It will need ca.80GB RAM
+echo Running SSAKE assembly pipeline 
 echo ------------------------------------------------------------------------------------ 
 echo Downloading trimmed/formatted data on $d ...
 echo ------------------------------------------------------------------------------------
@@ -8,7 +8,7 @@ rm -rf celegans_paired.fa
 wget ftp://ftp.bcgsc.ca/supplementary/SSAKE/celegans_paired.fa.gz
 gunzip celegans_paired.fa.gz
 echo ------------------------------------------------------------------------------------
-echo done. Initiating SSAKE assembly ETA 4h depending on system...
+echo done. Initiating SSAKE assembly
 echo ------------------------------------------------------------------------------------
 time ../SSAKE -f celegans_paired.fa -p 1 -m 20 -w 5 -b celegansLR
 echo ------------------------------------------------------------------------------------
