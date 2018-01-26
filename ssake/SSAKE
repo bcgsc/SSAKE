@@ -67,7 +67,9 @@ my $per;
 my $MAX = 0;
 my $MAX_TOP = 1500; # this is the very maximum anchoring edge sequence that will be searched (designed for use with -s to prevent long searches)
 my $TRACK_COUNT = 0;
+my $LR_MAXDIST_APART = 60000;
 my $illuminaLengthCutoff = 500; ### means all sequence reads greater than this are not illumina sequences
+my $LOW_COVERAGE_TIG_IN_A_ROW = 100; ### SEE THIS MANY CONTIGS HAVING < -w COVERAGE TO TERMINATE
 
 #-------------------------------------------------
 
@@ -178,7 +180,7 @@ my $mergedtigs = $base_name . "_mergedcontigs.fa" if ($paired);#deprecated Jan 2
 my $issues = $base_name . "_pairing-issues.txt" if ($paired);
 my $distribution = $base_name . "_pairing-distribution.csv" if ($paired);
 my $covfile = $base_name . "_coverage.csv" if ($tracked);
-my $rdpositionfile = $base_name . "_readposition.txt" if ($tracked);
+my $rdpositionfile = $base_name . ".readposition" if ($tracked);
 my $pileupfile = $base_name . ".pileup" if ($space_restriction);
 
 
@@ -249,8 +251,15 @@ if(-e $opt_s){
 }
 
 my($set,$bin,$matepair);
-($set,$bin,$matepair) = &readFasta($matepair,$set,$bin,$file,$short,$paired,$encoded,$seedsplit,$space_restriction,$targetwordlen,$ignorehead);
-($set,$bin,$matepair) = &readFasta($matepair,$set,$bin,$unpaired_file,$short,0,$encoded,$seedsplit,$space_restriction,$targetwordlen,$ignorehead) if (-e $opt_g);
+my($sumall,$ctall)=(0,0);
+
+($set,$bin,$matepair,$sumall,$ctall) = &readFasta($matepair,$set,$bin,$file,$short,$paired,$encoded,$seedsplit,$space_restriction,$targetwordlen,$ignorehead,$sumall,$ctall);
+($set,$bin,$matepair,$sumall,$ctall) = &readFasta($matepair,$set,$bin,$unpaired_file,$short,0,$encoded,$seedsplit,$space_restriction,$targetwordlen,$ignorehead,$sumall,$ctall) if (-e $opt_g);
+
+my $fc = $sumall / 3000000000;
+my $statslog = "Total reads interrogated (total bases): $ctall ($sumall) -- human genome equivalent(s) = %.4f\n";
+printf $statslog, $fc;
+printf LOG $statslog, $fc;
 
 if(! $opt_s){
    $seed = $set;
@@ -308,6 +317,7 @@ print "$status_bar\n.";
 my $keys_start = keys ( %$seed );
 
 my $low_total = 0;
+my $prev_cov = 0;
 
 #--------------------------------------------
 ASSEMBLY:
@@ -355,13 +365,14 @@ foreach my $seq (keys %$seed){#cycle through the input [normalized] reads
       my $trimmed_length = length($start_sequence) - 2*($max_trim);
 
       if($leng > $trimmed_length || ($reads_needed > 1 && $opt_s)){ ### second conditional is similar to TASR, output contig if targeted assembly mode and more reads have been recruited.
-         last ASSEMBLY if ($low_total >= 50);             ### sudden termination based on expected depth ov coverage
+         last ASSEMBLY if ($low_total >= $LOW_COVERAGE_TIG_IN_A_ROW); ### sudden termination based on expected depth ov coverage
 	 ### commented out: && $start_sequence ne $seqrc && $start_sequence ne $reversetig
 
          my $cov =  $total_bases / $leng;
          printf TIG ">contig%i|size%i|read%i|cov%.2f$seed_name\n%s\n", ($tig_count,$leng,$reads_needed,$cov,$reversetig);    #print contigs to file
 
          $tig_length->{$tig_count} = $leng;
+         if($prev_cov >= $min_depth_of_coverage){ $low_total=0; }###JAN2018 NEED $LOW_COVERAGE_TIG_IN_A_ROW to TERMINATE
          $low_total++ if ($cov < $min_depth_of_coverage);
 
          if($forcetrack && $leng >= $contig_size_cutoff){
@@ -487,7 +498,7 @@ foreach my $seq (keys %$seed){#cycle through the input [normalized] reads
             }
             ($track_all,$alternate) = &trackReads($track,$track_all,$alternate,$tig_count);  ### all pairs from all contigs (track for scaffolding)
          }
-
+         $prev_cov = $cov;
          $tig_count++;
       }else{
          my $cov = $reads_needed;
@@ -1076,7 +1087,7 @@ sub doExtension{
                if($pass =~ /^$subseq([ACGT]+)/ || $subseq =~ /$pass/){#### OVERHANG || EMBEDDED
                   #print "BC $subset->{$pass}\n";
                   if(defined $barcodeList->{$subset->{$pass}}){### barcode seen before
-                     if((length($seq) - $barcodeList->{$subset->{$pass}}{'lastlength'}) > 60000){
+                     if((length($seq) - $barcodeList->{$subset->{$pass}}{'lastlength'}) > $LR_MAXDIST_APART){
                         $barcodeList->{$subset->{$pass}}{'count'}=0; ### reset barcode to zero, too far apart, new molecule
                      }                     
                   }
@@ -1410,7 +1421,7 @@ sub reverseComplement{
 
 #-----------------
 sub readFasta{
-   my ($matepair,$set,$bin,$file,$short,$paired,$encoded,$seedsplit,$space_restriction,$targetwordlen,$ignorehead) = @_;
+   my ($matepair,$set,$bin,$file,$short,$paired,$encoded,$seedsplit,$space_restriction,$targetwordlen,$ignorehead,$sumall,$ctall) = @_;
 
    my $ctrd = 0;
    my $ctline = 0;
@@ -1435,6 +1446,10 @@ sub readFasta{
                my ($rd1,$rd2) = ($1,$2);
                my $head1 = $head . "1";
                my $head2 = $head . "2";
+               ####num
+               my $len = length($rd1) + length($rd2);
+               $sumall+=$len;
+               $ctall+=2;
 
                $head1="" if($ignorehead);
                $head2="" if($ignorehead);
@@ -1458,6 +1473,10 @@ sub readFasta{
          }else{
             $head="" if($ignorehead);
             ($set,$bin,$ctrd,$recruit_mate) = &loadSequence($set,$bin,$ctrd,$sdna,$encoded,$head,$up_iz,$seedsplit,$space_restriction,$targetwordlen,$recruit_mate) if ($sdna =~ /^([ACGT]*)$/i);
+            ####num
+            my $len = length($sdna);
+            $sumall+=$len;
+            $ctall++;
          }
       }elsif(/^\>(\S+)/){
          $head = $1;
@@ -1485,7 +1504,7 @@ sub readFasta{
    print LOG $read_number_message;
    $assemblyruninfo.=$read_number_message . "\n";
 
-   return $set,$bin,$matepair;
+   return $set,$bin,$matepair,$sumall,$ctall;
 }
 
 #-----------------
