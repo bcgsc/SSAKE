@@ -69,7 +69,7 @@ my $MAX_TOP = 1500; # this is the very maximum anchoring edge sequence that will
 my $TRACK_COUNT = 0;
 my $LR_MAXDIST_APART = 60000;
 my $illuminaLengthCutoff = 500; ### means all sequence reads greater than this are not illumina sequences
-my $LOW_COVERAGE_TIG_IN_A_ROW = 100; ### SEE THIS MANY CONTIGS HAVING < -w COVERAGE TO TERMINATE
+my $LOW_COVERAGE_TIG_IN_A_ROW = 20; ### SEE THIS MANY CONTIGS IN A ROW HAVING < -w COVERAGE TO TERMINATE
 
 #-------------------------------------------------
 
