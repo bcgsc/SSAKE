@@ -69,7 +69,7 @@ my $MAX_TOP = 1500; # this is the very maximum anchoring edge sequence that will
 my $TRACK_COUNT = 0;
 my $LR_MAXDIST_APART = 60000;
 my $illuminaLengthCutoff = 500; ### means all sequence reads greater than this are not illumina sequences
-my $LOW_COVERAGE_TIG_IN_A_ROW = 20; ### SEE THIS MANY CONTIGS IN A ROW HAVING < -w COVERAGE TO TERMINATE
+my $LOW_COVERAGE_TIG_IN_A_ROW = 100; ### SEE THIS MANY CONTIGS IN A ROW HAVING < -w COVERAGE TO TERMINATE
 
 #-------------------------------------------------
 
@@ -372,7 +372,7 @@ foreach my $seq (keys %$seed){#cycle through the input [normalized] reads
          printf TIG ">contig%i|size%i|read%i|cov%.2f$seed_name\n%s\n", ($tig_count,$leng,$reads_needed,$cov,$reversetig);    #print contigs to file
 
          $tig_length->{$tig_count} = $leng;
-         if($prev_cov >= $min_depth_of_coverage){ $low_total=0; }###JAN2018 NEED $LOW_COVERAGE_TIG_IN_A_ROW to TERMINATE
+         #if($prev_cov >= $min_depth_of_coverage){ $low_total=0; }###JAN2018 NEED $LOW_COVERAGE_TIG_IN_A_ROW to TERMINATE
          $low_total++ if ($cov < $min_depth_of_coverage);
 
          if($forcetrack && $leng >= $contig_size_cutoff){
