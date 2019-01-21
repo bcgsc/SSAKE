@@ -5,7 +5,7 @@ echo ---------------------------------------------------------------------------
 echo Downloading trimmed/formatted data on $d ...
 echo ------------------------------------------------------------------------------------
 rm -rf celegans_paired.fa
-wget ftp://ftp.bcgsc.ca/supplementary/SSAKE/celegans_paired.fa.gz
+wget http://www.bcgsc.ca/downloads/supplementary/SSAKE/celegans_paired.fa.gz
 gunzip celegans_paired.fa.gz
 echo ------------------------------------------------------------------------------------
 echo done. Initiating SSAKE assembly

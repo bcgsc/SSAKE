@@ -5,7 +5,7 @@ echo ---------------------------------------------------------------------------
 echo Downloading trimmed/formatted data for Fusobacterium nucleatum CC53 on $d ...
 echo ------------------------------------------------------------------------------------
 rm -rf CC53_2million.fa
-wget ftp://ftp.bcgsc.ca/supplementary/SSAKE/CC53_2million.fa
+wget http://www.bcgsc.ca/downloads/supplementary/SSAKE/CC53_2million.fa
 echo ------------------------------------------------------------------------------------
 echo done. Initiating SSAKE assembly ETA 10-20min depending on system...
 echo ------------------------------------------------------------------------------------

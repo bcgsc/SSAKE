@@ -2,7 +2,7 @@ echo Running: runSSAKEtargeted.sh
 echo THE FOLLOWING WILL RUN SSAKE IN *TARGETED* ASSEMBLY MODE
 echo RECONSTRUCTING A TRANSCRIPT FUSION SEQUENCE FROM targets.fa DE NOVO using a PROSTATE ADENOCARCINOMA RNAseq DATASET
 echo Downloading NGS reads
-wget ftp://ftp.bcgsc.ca/supplementary/SSAKE/SRR066437.fastq.bz2
+wget http://www.bcgsc.ca/downloads/supplementary/SSAKE/SRR066437.fastq.bz2
 echo Decompressing
 bunzip2 SRR066437.fastq.bz2
 echo Trimming reads

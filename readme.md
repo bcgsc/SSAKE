@@ -98,7 +98,7 @@ This release is 30% faster than v3.7, made possible by 4-base encoding of the fi
 *The assembly of ~1M quality-trimmed (../tools/TQSfastq.py -f Assemble_1_R1.fastq -t 30 -c 100 -e 33) Campylobacter showae CC57C (BioProject/Accession:PRJNA189774/AOTD00000000) bacterial NGS reads (1 lane, Illumina MiSeq, PE151, 1.8M pairs sequenced) with SSAKE v3.8.2 in paired-end mode took 10m31s and 3.8GB RAM on a 12-core 48GB RAM machine (Benchmark with syrupy @https://github.com/jeetsukumaran/Syrupy) and yielded 215 contigs with N50=41kbp (151 scaffolds, N50=124kbp), and a reconstruction of 2.2Mbp. 
 
 Campylobacter showae CC57C colorectal cancer tumor isolate (~2Mbp genome) Illumina MiSeq TEST DATA AVAILABLE HERE:
-ftp://ftp.bcgsc.ca/supplementary/SSAKE/CC57C_paired.fa and CC57C_unpaired.fa
+http://www.bcgsc.ca/downloads/supplementary/SSAKE/CC57C_paired.fa and CC57C_unpaired.fa
  
 SSAKE ASSEMBLY PIPELINE:
 ./test/runSSAKE.sh

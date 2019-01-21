@@ -3,8 +3,8 @@ echo ---------------------------------------------------------------------------
 echo Running SSAKE assembly pipeline on bacterial sequence data 250X E.coli
 echo ----------------------------------------------------------------------------------- 
 rm -rf ecoli_miseqTrimmed*fa
-wget ftp://ftp.bcgsc.ca/supplementary/SSAKE/ecoli_miseqTrimmed_paired.fa
-wget ftp://ftp.bcgsc.ca/supplementary/SSAKE/ecoli_miseqTrimmed_unpaired.fa
+wget http://www.bcgsc.ca/downloads/supplementary/SSAKE/ecoli_miseqTrimmed_paired.fa
+wget http://www.bcgsc.ca/downloads/supplementary/SSAKE/ecoli_miseqTrimmed_unpaired.fa
 echo -----------------------------------------------------------------------------------
 echo done. Initiating SSAKE assembly ETA 20-30min depending on system...
 echo -----------------------------------------------------------------------------------
