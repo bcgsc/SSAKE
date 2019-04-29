@@ -509,19 +509,22 @@ Example input from the C. elegans test data available with the v4.0 distribution
 CACATACGAGGGCGTTATTTGAAAAATTTAAAAATCAACATGTTCAAGCGTGCGAAGTGTCAAAATAAAAAAGAAAAAAAAAACGAAAAAAAAAACAGAAAAGGCTGATAAGAGGACGCGTCAAGTTA:ACTGCTCATTTGTCAATCAGCAAGGTACATGAAAACACAGAGCAGGAACCAAAATGCACACAATAAAACTCCCCGTACCCATTGTGTGGTACGCAGTACAAAATGACTGACAATAAGAAAGGGAGAGAGGGATTGAGGCGCCGAATACTTG
 </pre>
 
+Additional info:
+<pre>
 -Paired sequences must be concatenated together in one fasta-like entry, separated by ":".  For example, TGGCTCACCCCTGTAATCCCAGCACT:CTCCCAGGTTCAAGCGATTCTCCTGC consists of two paired reads.  Changes to the input was made to allow reads of variable length (e.g. quality-trimmed reads) to be considered by SSAKE.  As of v3-6, the header line [>] must have [:insert_size] at the very end (see above example)
 
 -The -f option can read either paired or unpaired sequences, depending whether -p is set or not, respectively.
 Users can co-assemble paired and unpaired reads if they wish.  If so, the unpaired reads are inputted using the -g option.
-
+</pre>
 
 General points:
+<pre>
 -To be considered, sequences have to be longer than 16 nt or -m (but can be of different lengths).  If they are shorter, the program will simply omit them from the assembly and will be placed in the .shorts file 
 -Short sequences that have not been extended are placed in the .singlets file
 -As before, the length of individual sequence is used to determine the size of the right-most subsequence to look for initially
 -Reads containing ambiguous bases "." and characters other than ACGT will be ignored entirely
 -Spaces in fasta file are NOT permitted and will either not be considered or result in execution failure
-
+</pre>
 
 ### Output files
 ------------
