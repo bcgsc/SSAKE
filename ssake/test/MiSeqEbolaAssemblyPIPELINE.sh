@@ -5,7 +5,8 @@ echo ---------------------------------------------------------------------------
 echo Downloading MiSeq data for Ebola on $d ...
 echo -----------------------------------------------------------------------------------
 rm -rf SRR2019530_*.fastq
-wget http://www.bcgsc.ca/downloads/supplementary/SSAKE/SRR2019530_*.fastq
+wget http://www.bcgsc.ca/downloads/supplementary/SSAKE/SRR2019530_1.fastq
+wget http://www.bcgsc.ca/downloads/supplementary/SSAKE/SRR2019530_2.fastq
 echo -----------------------------------------------------------------------------------
 echo done. Trimming low quality bases, be patient...
 echo -----------------------------------------------------------------------------------

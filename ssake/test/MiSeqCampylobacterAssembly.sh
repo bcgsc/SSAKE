@@ -6,7 +6,8 @@ echo Downloading trimmed/formatted data for Campylobacter showae CC57C on $d ...
 echo ------------------------------------------------------------------------------------
 rm -rf CC57C_paired.fa
 rm -rf CC57C_unpaired.fa
-wget http://www.bcgsc.ca/downloads/supplementary/SSAKE/CC57C*
+wget http://www.bcgsc.ca/downloads/supplementary/SSAKE/CC57C_paired.fa
+wget http://www.bcgsc.ca/downloads/supplementary/SSAKE/CC57C_unpaired.fa
 echo ------------------------------------------------------------------------------------
 echo done. Initiating SSAKE assembly ETA 10-20min depending on system...
 echo ------------------------------------------------------------------------------------

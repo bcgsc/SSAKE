@@ -5,7 +5,8 @@ echo ---------------------------------------------------------------------------
 echo Downloading MiSeq data for Campylobacter showae CC57C on $d ...
 echo -----------------------------------------------------------------------------------
 rm -rf Assemble_1_R*.fastq
-wget http://www.bcgsc.ca/downloads/supplementary/SSAKE/Assemble_1_R*.fastq
+wget http://www.bcgsc.ca/downloads/supplementary/SSAKE/Assemble_1_R1.fastq
+wget http://www.bcgsc.ca/downloads/supplementary/SSAKE/Assemble_1_R2.fastq
 echo -----------------------------------------------------------------------------------
 echo done. Trimming low quality bases, be patient...
 echo -----------------------------------------------------------------------------------
