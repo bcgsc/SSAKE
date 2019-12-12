@@ -238,7 +238,9 @@ Thank you for your [![Stars](https://img.shields.io/github/stars/warrenlr/SSAKE.
 If you use SSAKE for you research, please cite:
 
 <pre>
-Warren RL, Sutton GG, Jones SJM, Holt RA.  2007.  Assembling millions of short DNA sequences using SSAKE.  Bioinformatics. 23(4):500-501
+Assembling millions of short DNA sequences using SSAKE
+Warren RL, Sutton GG, Jones SJM, Holt RA.  
+2007. Bioinformatics. 23(4):500-501
 </pre>
 [![link](https://img.shields.io/badge/SSAKE-manuscript-brightgreen)](https://doi.org/10.1093/bioinformatics/btl629)
 
