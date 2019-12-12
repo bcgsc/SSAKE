@@ -9,7 +9,6 @@
 ## Short Sequence Assembly by K-mer search and 3' read Extension
 ## SSAKE v4.0 Rene L. Warren, 2006-2020
 ## email: rwarren [at] bcgsc [dot] ca
-## Visit www.bcgsc.ca/bioinfo/software/ssake for additional information
 
 
 ### Description
@@ -225,7 +224,6 @@ Change the shebang line of SSAKE to point to the version of perl installed on yo
 -------------
 
 Refer to the SSAKE.readme file on how to run SSAKE and the SSAKE web site for information about the software and its performance 
-www.bcgsc.ca/bioinfo/software/ssake
 
 Questions or comments?  We would love to hear from you!
 
