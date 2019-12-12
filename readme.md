@@ -7,7 +7,7 @@
 
 # SSAKE
 ## Short Sequence Assembly by K-mer search and 3' read Extension
-## SSAKE v4.0 Rene L. Warren, 2006-2018
+## SSAKE v4.0 Rene L. Warren, 2006-2020
 ## email: rwarren [at] bcgsc [dot] ca
 ## Visit www.bcgsc.ca/bioinfo/software/ssake for additional information
 
@@ -233,7 +233,7 @@ Questions or comments?  We would love to hear from you!
 ### Citing SSAKE
 ------------
 
-Thank you for your [![Stars](https://img.shields.io/github/stars/warrenlr/SSAKE.svg)](https://github.com/warrenlr/SSAKE/stargazers) and for using, developing and promoting this free software.
+Thank you for your [![Stars](https://img.shields.io/github/stars/warrenlr/SSAKE.svg)](https://github.com/warrenlr/SSAKE/stargazers) and for using, developing and promoting this free software!
 
 If you use SSAKE for you research, please cite:
 
@@ -633,7 +633,7 @@ Note: Python scripts (TQS.py, TQSfastq.py, TQSexport.fq) are provided to help tr
 ### License
 -------
 
-SSAKE Copyright (c) 2006-2018 Canada's Michael Smith Genome Science Centre.  All rights reserved.
+SSAKE Copyright (c) 2006-2020 Canada's Michael Smith Genome Science Centre.  All rights reserved.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
