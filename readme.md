@@ -1,4 +1,5 @@
 [![Release](https://img.shields.io/github/release/warrenlr/SSAKE.svg)](https://github.com/warrenlr/SSAKE/releases)
+[![Downloads](https://img.shields.io/github/downloads/warrenlr/SSAKE/total?logo=github)](https://github.com/warrenlr/SSAKE/releases/download/v4.0/ssake_v4-0.tar.gz)
 [![Issues](https://img.shields.io/github/issues/warrenlr/SSAKE.svg)](https://github.com/warrenlr/SSAKE/issues)
 
 ![Logo](https://github.com/warrenlr/ssake/blob/master/ssake-logo.png)
