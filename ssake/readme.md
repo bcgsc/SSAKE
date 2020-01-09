@@ -1,11 +1,14 @@
+[![Release](https://img.shields.io/github/release/warrenlr/SSAKE.svg)](https://github.com/warrenlr/SSAKE/releases)
+[![Downloads](https://img.shields.io/github/downloads/warrenlr/SSAKE/total?logo=github)](https://github.com/warrenlr/SSAKE/releases/download/v4.0/ssake_v4-0.tar.gz)
+[![Issues](https://img.shields.io/github/issues/warrenlr/SSAKE.svg)](https://github.com/warrenlr/SSAKE/issues)
+
 ![Logo](https://github.com/warrenlr/ssake/blob/master/ssake-logo.png)
 
 
 # SSAKE
 ## Short Sequence Assembly by K-mer search and 3' read Extension
-## SSAKE v4.0 Rene L. Warren, 2006-2018
+## SSAKE v4.0 Rene L. Warren, 2006-2020
 ## email: rwarren [at] bcgsc [dot] ca
-## Visit www.bcgsc.ca/bioinfo/software/ssake for additional information
 
 
 ### Description
@@ -98,7 +101,7 @@ This release is 30% faster than v3.7, made possible by 4-base encoding of the fi
 *The assembly of ~1M quality-trimmed (../tools/TQSfastq.py -f Assemble_1_R1.fastq -t 30 -c 100 -e 33) Campylobacter showae CC57C (BioProject/Accession:PRJNA189774/AOTD00000000) bacterial NGS reads (1 lane, Illumina MiSeq, PE151, 1.8M pairs sequenced) with SSAKE v3.8.2 in paired-end mode took 10m31s and 3.8GB RAM on a 12-core 48GB RAM machine (Benchmark with syrupy @https://github.com/jeetsukumaran/Syrupy) and yielded 215 contigs with N50=41kbp (151 scaffolds, N50=124kbp), and a reconstruction of 2.2Mbp. 
 
 Campylobacter showae CC57C colorectal cancer tumor isolate (~2Mbp genome) Illumina MiSeq TEST DATA AVAILABLE HERE:
-ftp://ftp.bcgsc.ca/supplementary/SSAKE/CC57C_paired.fa and CC57C_unpaired.fa
+http://www.bcgsc.ca/downloads/supplementary/SSAKE/CC57C_paired.fa and CC57C_unpaired.fa
  
 SSAKE ASSEMBLY PIPELINE:
 ./test/runSSAKE.sh
@@ -221,7 +224,6 @@ Change the shebang line of SSAKE to point to the version of perl installed on yo
 -------------
 
 Refer to the SSAKE.readme file on how to run SSAKE and the SSAKE web site for information about the software and its performance 
-www.bcgsc.ca/bioinfo/software/ssake
 
 Questions or comments?  We would love to hear from you!
 
@@ -229,12 +231,17 @@ Questions or comments?  We would love to hear from you!
 ### Citing SSAKE
 ------------
 
-Thank you for using, developing and promoting this free software.
+Thank you for your [![Stars](https://img.shields.io/github/stars/warrenlr/SSAKE.svg)](https://github.com/warrenlr/SSAKE/stargazers) and for using, developing and promoting this free software!
+
 If you use SSAKE for you research, please cite:
 
 <pre>
-Warren RL, Sutton GG, Jones SJM, Holt RA.  2007.  Assembling millions of short DNA sequences using SSAKE.  Bioinformatics. 23(4):500-501
+Assembling millions of short DNA sequences using SSAKE
+Warren RL, Sutton GG, Jones SJM, Holt RA.  
+2007. Bioinformatics. 23(4):500-501
 </pre>
+[![link](https://img.shields.io/badge/SSAKE-manuscript-brightgreen)](https://doi.org/10.1093/bioinformatics/btl629)
+
 
 ### Running SSAKE
 -------------
@@ -509,19 +516,22 @@ Example input from the C. elegans test data available with the v4.0 distribution
 CACATACGAGGGCGTTATTTGAAAAATTTAAAAATCAACATGTTCAAGCGTGCGAAGTGTCAAAATAAAAAAGAAAAAAAAAACGAAAAAAAAAACAGAAAAGGCTGATAAGAGGACGCGTCAAGTTA:ACTGCTCATTTGTCAATCAGCAAGGTACATGAAAACACAGAGCAGGAACCAAAATGCACACAATAAAACTCCCCGTACCCATTGTGTGGTACGCAGTACAAAATGACTGACAATAAGAAAGGGAGAGAGGGATTGAGGCGCCGAATACTTG
 </pre>
 
+Additional info:
+<pre>
 -Paired sequences must be concatenated together in one fasta-like entry, separated by ":".  For example, TGGCTCACCCCTGTAATCCCAGCACT:CTCCCAGGTTCAAGCGATTCTCCTGC consists of two paired reads.  Changes to the input was made to allow reads of variable length (e.g. quality-trimmed reads) to be considered by SSAKE.  As of v3-6, the header line [>] must have [:insert_size] at the very end (see above example)
 
 -The -f option can read either paired or unpaired sequences, depending whether -p is set or not, respectively.
 Users can co-assemble paired and unpaired reads if they wish.  If so, the unpaired reads are inputted using the -g option.
-
+</pre>
 
 General points:
+<pre>
 -To be considered, sequences have to be longer than 16 nt or -m (but can be of different lengths).  If they are shorter, the program will simply omit them from the assembly and will be placed in the .shorts file 
 -Short sequences that have not been extended are placed in the .singlets file
 -As before, the length of individual sequence is used to determine the size of the right-most subsequence to look for initially
 -Reads containing ambiguous bases "." and characters other than ACGT will be ignored entirely
 -Spaces in fasta file are NOT permitted and will either not be considered or result in execution failure
-
+</pre>
 
 ### Output files
 ------------
@@ -625,7 +635,7 @@ Note: Python scripts (TQS.py, TQSfastq.py, TQSexport.fq) are provided to help tr
 ### License
 -------
 
-SSAKE Copyright (c) 2006-2018 Canada's Michael Smith Genome Science Centre.  All rights reserved.
+SSAKE Copyright (c) 2006-2020 Canada's Michael Smith Genome Science Centre.  All rights reserved.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
