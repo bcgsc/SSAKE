@@ -79,21 +79,22 @@ OPTIONS for SSAKE
      optional)
           ! Use -k for this script
 -b   Base name for your output files (optional)
+          ! Implicitly used in this script
 -z   Minimum contig size to track base coverage and read position
      (default -z 100, optional)
 -q   Break tie when no consensus base at position, pick random base
      (-q 1 = yes, default = no, optional)
 -p   Paired-end reads used? (-p 1 = yes, default = no, optional)
+          ! Implicitly used in this script
 -v   Runs in verbose mode (-v 1 = yes, default = no, optional)
 
 EOF
 }
 
 # Parse command line options
-X_ARG=10
-N_ARG=30
+X_ARG=20
+N_ARG=70
 D_ARG=33
-V_ARG=0
 W_ARG=5
 M_ARG=20
 O_ARG=2
@@ -102,11 +103,10 @@ T_ARG=0
 C_ARG=0
 Y_ARG=0
 K_ARG=0
-B_ARG=SSAKE
 Z_ARG=100
 Q_ARG=0
-P_ARG=0
-while getopts "x:n:d:vw:m:o:r:tcykb:z:qph" opt; do
+V_ARG=0
+while getopts "x:n:d:vw:m:o:r:tcykz:qph" opt; do
     case $opt in
         x)
 	    X_ARG=$OPTARG
@@ -116,9 +116,6 @@ while getopts "x:n:d:vw:m:o:r:tcykb:z:qph" opt; do
             ;;
         d)
             D_ARG=$OPTARG
-            ;;
-        v)
-            V_ARG=1
             ;;
         w)
             W_ARG=$OPTARG
@@ -144,17 +141,14 @@ while getopts "x:n:d:vw:m:o:r:tcykb:z:qph" opt; do
         k)
             K_ARG=1
             ;;
-        b)
-            B_ARG=$OPTARG
-            ;;
         z)
             Z_ARG=$OPTARG
             ;;
         q)
             Q_ARG=1
             ;;
-        p)
-            P_ARG=1
+        v)
+            V_ARG=1
             ;;
         h)
 	    usage
@@ -178,10 +172,10 @@ if [ "$1" == "" ] || [ "$2" == "" ] || [ "$3" == "" ] || [ "$4" == "" ]; then
     usage
     exit 1
 else
-    READ1FQ = $1
-    READ2FQ = $2
-    LFRAGLEN = $3
-    BASENAME = $4
+    READ1FQ=$1
+    READ2FQ=$2
+    LFRAGLEN=$3
+    BASENAME=$4
 fi
 
 # Run the pipeline
@@ -198,10 +192,10 @@ echo ${DATE} : Trimming low quality bases, be patient...
 echo -----------------------------------------------------------------------------------
 echo ${READ1FQ} > filesToTrim.fof
 echo ${READ2FQ} >> filesToTrim.fof
-TQSfastq.pl -f filesToTrim.fof -q ${X_VAL} -n ${N_VAL} -e ${D_VAL} -v${V_VAL}
-cat ${READ1FQ}c${N_VAL}q${X_VAL}e${D_VAL}.fa \
+TQSfastq.pl -f filesToTrim.fof -q ${X_ARG} -n ${N_ARG} -e ${D_ARG}
+cat ${READ1FQ}c${N_ARG}q${X_ARG}e${D_ARG}.fa \
     | perl -ne 'if(/^(\>\@\S+)/){print "${READ1FQ}b\n";}else{print;}' > read1.trimmed.fa
-cat ${READ2FQ}c${N_VAL}q${X_VAL}e${D_VAL}.fa \
+cat ${READ2FQ}c${N_ARG}q${X_ARG}e${D_ARG}.fa \
     | perl -ne 'if(/^(\>\@\S+)/){print "${READ1FQ}a\n";}else{print;}' > read2.trimmed.fa
 DATE=`date`
 echo -----------------------------------------------------------------------------------
@@ -212,9 +206,11 @@ DATE=`date`
 echo -----------------------------------------------------------------------------------
 echo ${DATE} : Initiating SSAKE...
 echo -----------------------------------------------------------------------------------
-time -v -o ${BASENAME}.time SSAKE -f paired.fa -p 1 -g unpaired.fa \
-     -w W_ARG -m M_ARG -o O_ARG -r R_ARG -t T_ARG -c C_ARG -y Y_ARG \
-     -k K_ARG -b B_ARG -z Z_ARG -q Q_ARG -p P_ARG -v V_ARG ${BASENAME}
+# TODO: Restore before committing
+# time -v -o ${BASENAME}.time
+SSAKE -f paired.fa -p 1 -g unpaired.fa -m ${M_ARG} -w ${W_ARG} -b ${BASENAME} \
+      -o ${O_ARG} -r ${R_ARG} -t ${T_ARG} -c ${C_ARG} -y ${Y_ARG} -h ${K_ARG} \
+      -z ${Z_ARG} -q ${Q_ARG} -v ${V_ARG}
 DATE=`date`
 echo -----------------------------------------------------------------------------------
 echo ${DATE} : Computing stats 
