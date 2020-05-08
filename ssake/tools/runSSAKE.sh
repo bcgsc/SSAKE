@@ -206,7 +206,7 @@ DATE=`date`
 echo -----------------------------------------------------------------------------------
 echo ${DATE} : Initiating SSAKE...
 echo -----------------------------------------------------------------------------------
-time -v -o ${BASENAME}.time \
+/usr/bin/time -v -o ${BASENAME}.time \
      SSAKE -f paired.fa -p 1 -g unpaired.fa \
            -m ${M_ARG} -w ${W_ARG} -b ${BASENAME} \
            -o ${O_ARG} -r ${R_ARG} -t ${T_ARG} -c ${C_ARG} -y ${Y_ARG} -h ${K_ARG} \
