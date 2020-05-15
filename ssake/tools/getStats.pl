@@ -1,4 +1,4 @@
-#!/home/martink/bin/perl
+#!/usr/bin/perl
 ##Rene Warren 2002-2014
 
 use Statistics::Descriptive;
