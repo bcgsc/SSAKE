@@ -2,6 +2,7 @@
 [![Downloads](https://img.shields.io/github/downloads/warrenlr/SSAKE/total?logo=github)](https://github.com/warrenlr/SSAKE/releases/download/v4.0/ssake_v4-0.tar.gz)
 [![Conda](https://img.shields.io/conda/dn/bioconda/ssake?label=Conda)](https://anaconda.org/bioconda/SSAKE)
 [![Issues](https://img.shields.io/github/issues/warrenlr/SSAKE.svg)](https://github.com/warrenlr/SSAKE/issues)
+Thank you for your [![Stars](https://img.shields.io/github/stars/warrenlr/SSAKE.svg)](https://github.com/warrenlr/SSAKE/stargazers)!
 
 ![Logo](https://github.com/warrenlr/ssake/blob/master/ssake-logo.png)
 
