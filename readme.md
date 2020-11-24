@@ -368,21 +368,21 @@ Contigs:
 
 species|read type|n|n:500|L50|min|N80|N50|N20|E-size|max|sum|time (h:mm:ss)|RAM (GB)|file name
 ---|---|---|---|---|---|---|---|---|---|---|---|---|---|---
-Herpes virus|Illumina single-end|7|1|1|60000|60000|60000|60000|60000|60000|60000|0:00:22|0.2|HStestInstall_contigs.fa
-Ebola virus|Illumina paired-end|122|18|1|501|688|18917|18917|12139|18917|30101|0:01:22|0.4|ebola_contigs.fa
-F. nucleatum|HiSeq paired-end|697|560|131|501|2540|4641|8019|5631|19764|1937271|0:10:43|6.0|fusoCC53_contigs.fa
-C. showae|MiSeq paired-end|206|109|21|562|18061|32736|64004|40613|107028|2222124|0:06:58|3.5|CC57C_contigs.fa
-E. coli|MiSeq paired-end|101|97|12|687|80150|127399|210819|146845|318067|4606049|0:21:50|9.3|coliMiSeq300m80_contigs.fa
-C. elegans|LRsim linked-read (paired) |5352|4949|613|502|19304|44626|90857|58011|305563|95.57e6|4:05:34|79.1|celegansLR_contigs.fa
+Herpes virus|Illumina single-end|7|1|1|60,000|60,000|60,000|60,000|60,000|60,000|60,000|0:00:22|0.2|HStestInstall_contigs.fa
+Ebola virus|Illumina paired-end|122|18|1|501|688|18,917|18,917|12,139|18,917|30,101|0:01:22|0.4|ebola_contigs.fa
+F. nucleatum|HiSeq paired-end|697|560|131|501|2,540|4,641|8,019|5,631|19,764|1,937,271|0:10:43|6.0|fusoCC53_contigs.fa
+C. showae|MiSeq paired-end|206|109|21|562|18,061|32,736|64,004|40,613|107,028|2,222,124|0:06:58|3.5|CC57C_contigs.fa
+E. coli|MiSeq paired-end|101|97|12|687|80,150|127,399|210,819|146,845|318,067|4,606,049|0:21:50|9.3|coliMiSeq300m80_contigs.fa
+C. elegans|LRsim linked-read (paired) |5,352|4,949|613|502|19,304|44,626|90,857|58,011|305,563|95.57e6|4:05:34|79.1|celegansLR_contigs.fa
 
 Scaffolds:
 
 species|read type|n|n:500|L50|min|N80|N50|N20|E-size|max|sum|name
 ---|---|---|---|---|---|---|---|---|---|---|---|---
-F. nucleatum|HiSeq paired-end|638|524|120|501|2756|5067|9273|6141|19764|1943677|fusoCC53_scaffolds.fa
-C. showae|MiSeq paired-end|135|42|6|585|47914|128053|233500|159643|382374|2223249|Cshowae_scaffolds.fa
-E. coli|MiSeq paired-end|86|82|5|687|91172|204889|1193524|437907|1193524|4606049|coliMiSeq300m80_scaffolds.fa
-C. elegans|LRsim linked-read (paired)|4637|4309|491|502|22274|53866|112496|74063|357928|95.59e6|celegansLR_scaffolds.fa
+F. nucleatum|HiSeq paired-end|638|524|120|501|2,756|5,067|9,273|6,141|19,764|1,943,677|fusoCC53_scaffolds.fa
+C. showae|MiSeq paired-end|135|42|6|585|47,914|128,053|233,500|159,643|382,374|2,223,249|Cshowae_scaffolds.fa
+E. coli|MiSeq paired-end|86|82|5|687|91,172|204,889|1,193,524|437,907|1,193,524|4,606,049|coliMiSeq300m80_scaffolds.fa
+C. elegans|LRsim linked-read (paired)|4,637|4,309|491|502|22,274|53,866|112,496|74,063|357,928|95.59e6|celegansLR_scaffolds.fa
 
 stats generated with abyss-fac
 
