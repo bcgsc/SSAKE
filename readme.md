@@ -7,9 +7,8 @@ Thank you for your [![Stars](https://img.shields.io/github/stars/warrenlr/SSAKE.
 ![Logo](https://github.com/warrenlr/ssake/blob/master/ssake-logo.png)
 
 
-# SSAKE
 ## Short Sequence Assembly by K-mer search and 3' read Extension
-## SSAKE v4.0 Rene L. Warren, 2006-2020
+## Rene L. Warren, 2006-2020
 ## email: rwarren [at] bcgsc [dot] ca
 
 
