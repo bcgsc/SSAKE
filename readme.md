@@ -10,7 +10,7 @@ Thank you for your [![Stars](https://img.shields.io/github/stars/warrenlr/SSAKE.
 
 ## Short Sequence Assembly by K-mer search and 3' read Extension
 ### Rene L Warren 
-### 2006-2021
+### 2006-2022
 
 
 
