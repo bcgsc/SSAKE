@@ -237,7 +237,7 @@ Questions or comments?  We would love to hear from you!
 
 Thank you for your [![Stars](https://img.shields.io/github/stars/warrenlr/SSAKE.svg)](https://github.com/warrenlr/SSAKE/stargazers) and for using, developing and promoting this free software!
 
-If you use SSAKE for you research, please cite:
+If you use SSAKE (or any other tools distributed with SSAKE) for you research, please cite:
 
 <pre>
 Assembling millions of short DNA sequences using SSAKE
