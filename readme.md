@@ -12,7 +12,7 @@ Thank you for your [![Stars](https://img.shields.io/github/stars/warrenlr/SSAKE.
 ### Rene L Warren 
 ### 2006-2023
 
-### CONTENTS
+### Contents
 --------
 1. [Description](#des)
 2. [For best performance](#per)
