@@ -27,7 +27,6 @@ Thank you for your [![Stars](https://img.shields.io/github/stars/warrenlr/SSAKE.
 11. [Input](#input)
 12. [Output](#output)
 13. [License](#license)
-
 --------
 
 ### Description <a name=des></a>
