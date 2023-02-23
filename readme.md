@@ -12,9 +12,25 @@ Thank you for your [![Stars](https://img.shields.io/github/stars/warrenlr/SSAKE.
 ### Rene L Warren 
 ### 2006-2023
 
+### CONTENTS
+--------
+1. [Description](#des)
+2. [For best performance](#per)
+3. [What's new](#new)
+4. [Implementation and requirements](#imp)
+5. [Installation](#install)
+6. [Documentation](#doc)
+7. [Citing SSAKE](#citing)
+8. [Running SSAKE](#run)
+9. [Test data](#test)
+10. [Algorithm](#algo)
+11. [Input](#input)
+12. [Output](#output)
+13. [License](#license)
 
+--------
 
-### Description
+### Description <a name=des></a>
 -----------
 
 SSAKE is a genomics application for de novo assembly of millions of very short DNA sequences.
@@ -22,7 +38,7 @@ It is an easy-to-use, robust, reliable and tractable assembly algorithm for shor
 
 Algorithms of SSAKE are the core of many genomics applications (eg. VCAKE, QSRA, SHARCGS, SSPACE, JR-Assembler) and their design continues to inspire new-generation assemblers (eg. JR-Assembler, PNAS 2013; ViQuaS, Bioinformatics 2015). Applications of SSAKE extend beyond genome assembly and the technology was applied to profiling T-cell metagenomes, targeted de novo assembly (TASR), scaffolding (LINKS, ARCS), HLA typing (HLAminer) and was key to the discovery of Fusobacterium in colon cancer, a finding designated as one of the top 10 medical breakthroughs of 2011 by Time magazine. SSAKE is also the assembly engine in the top-performing cancer genomic structural variant predictor pipeline software novoBreak (https://www.nature.com/articles/nmeth.4084 Nature Methods 2017), as assessed by the ICGC-TCGA DREAM Genomic Mutation Calling Challenge.
 
-### For best performance
+### For best performance <a name=per></a>
 --------------------
 
 Best assembly results are achieved with quality-trimmed reads.  When working with Solexa/Illumina sequences, remove low quality bases, whenever possible, with:
@@ -52,7 +68,7 @@ It is recommended that you run TQS.py/TQSfastq.py for every tile (batch job) and
 
 For trimming paired-end sequences (using _seq.txt and _prb.txt from Illumina), please refer to TRIMMING_PAIRED_READS.README located in the ./tools subdirectory
 
-### What's new in v4.0 ?
+### What's new in v4.0 ? <a name=new></a>
 ----------------------
 <pre>
 -Initial support for linked reads, such as those produced by the 10x Genomics Chromium technology
@@ -191,7 +207,7 @@ SSAKE can now handle error-rich data sets by looking through the overlapping k-m
 SSAKE now runs on reads of various lengths.  That means quality base trimming of individual sequences can be achieved (using TQS.py/TQSfastq.py supplied in ./tools directory).
 </pre>
 
-### Implementation and requirements
+### Implementation and requirements <a name=imp></a>
 -------------------------------
 
 SSAKE is implemented in PERL and runs on any OS where PERL is installed.
@@ -213,7 +229,7 @@ PLEASE READ:
 SSAKE might not be suited to work with 454-type reads.  Simply because recurring base insertions/deletions errors, such as those commonly seen in homopolymeric regions, will not assemble well in the context of the SSAKE algorithm scheme. Sanger reads are ok, as long as reads are quality-trimmed.
 
 
-### Install
+### Installation <a name=install></a>
 -------
 
 Download the tar ball, gunzip and extract the files on your system using:
@@ -224,7 +240,7 @@ tar -xvf ssake_v4-0.tar
 Change the shebang line of SSAKE to point to the version of perl installed on your system and you're good to go.
 
 
-### Documentation
+### Documentation <a name=doc></a>
 -------------
 
 Refer to the SSAKE.readme file on how to run SSAKE and the SSAKE web site for information about the software and its performance 
@@ -232,7 +248,7 @@ Refer to the SSAKE.readme file on how to run SSAKE and the SSAKE web site for in
 Questions or comments?  We would love to hear from you!
 
 
-### Citing SSAKE
+### Citing SSAKE <a name=citing></a>
 ------------
 
 Thank you for your [![Stars](https://img.shields.io/github/stars/warrenlr/SSAKE.svg)](https://github.com/warrenlr/SSAKE/stargazers) and for using, developing and promoting this free software!
@@ -247,7 +263,7 @@ Warren RL, Sutton GG, Jones SJM, Holt RA.
 [![link](https://img.shields.io/badge/SSAKE-manuscript-brightgreen)](https://doi.org/10.1093/bioinformatics/btl629)
 
 
-### Running SSAKE
+### Running SSAKE <a name=run></a>
 -------------
 <pre>
 e.g. SSAKE -f paired.fa -m 20 -o 3 -r 0.7 -p 1 -c 1 -e 0.75 -l 5 -a 0.3 -z 50 -w 5 -g unpaired.fa 
@@ -290,7 +306,7 @@ USAGE: ./runSSAKE.sh read1.fq read2.fq libraryFragmentLength basename
 
 </pre>
 
-### Test data
+### Test data <a name=test></a>
 ---------
 
 Go to the test folder, (cd test)
@@ -390,7 +406,7 @@ stats generated with abyss-fac
 benchmark: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz 128CPU 2TB RAM CentOS7/ 1 thread per assembly
 
 
-### How it works
+### Algorithm <a name=algo></a>
 ------------
 
 1. Sequence Overlap
@@ -474,7 +490,7 @@ If more than one seed is supplied in the -s file and you're providing paired-end
 
 
 
-### Input sequences
+### Input <a name=input></a>
 ---------------
 
 UNPAIRED:
@@ -537,7 +553,7 @@ General points:
 -Spaces in fasta file are NOT permitted and will either not be considered or result in execution failure
 </pre>
 
-### Output files
+### Output <a name=output></a>
 ------------
 
 Output file (-p 0 and -p 1) | Description
@@ -636,7 +652,7 @@ In this order: read name [template th -p 1 :: name followed with 1 or 2, corresp
 Note: Python scripts (TQS.py, TQSfastq.py, TQSexport.fq) are provided to help trim poor quality bases off Illumina sequences. Refer to TQS.readme and TRIMMING_PAIRED_READS.README included in this distribution (in the ./tools subdirectory) for information on how to run those programs
 
 
-### License
+### License <a name=license></a>
 -------
 
 SSAKE Copyright (c) 2006-2023 Canada's Michael Smith Genome Science Centre.  All rights reserved.
