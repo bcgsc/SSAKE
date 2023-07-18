@@ -238,7 +238,7 @@ tar -xvf ssake_v4-0.tar
 </pre>
 Change the shebang line of SSAKE to point to the version of perl installed on your system and you're good to go.
 
-With Conda:
+To install this package with Conda, run one of the following:
 <pre>
 conda install -c bioconda ssake
 conda install -c "bioconda/label/cf201901" ssake
