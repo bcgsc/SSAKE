@@ -10,7 +10,7 @@ Thank you for your [![Stars](https://img.shields.io/github/stars/warrenlr/SSAKE.
 
 ## Short Sequence Assembly by K-mer search and 3' read Extension
 ### Rene L Warren 
-### 2006-2023
+### 2006-present
 
 ### Contents
 --------
@@ -660,7 +660,7 @@ Note: Python scripts (TQS.py, TQSfastq.py, TQSexport.fq) are provided to help tr
 ### License <a name=license></a>
 -------
 
-SSAKE Copyright (c) 2006-2023 Canada's Michael Smith Genome Science Centre.  All rights reserved.
+SSAKE Copyright (c) 2006-present Canada's Michael Smith Genome Science Centre.  All rights reserved.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
